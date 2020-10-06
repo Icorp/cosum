@@ -26,13 +26,6 @@ kmeans = KMeans(n_clusters=3,random_state=42).fit(data)
 X = cosum.labelInMatrix(kmeans.labels_)
 O = kmeans.cluster_centers_
 #S = cosum.computeAllWeightOfDocument(document)
-            
-            
-                    
-
-
-
-
 
 #  S - is weight of all words in the document
 # S = [[w1,w2,...,wn],
@@ -41,20 +34,11 @@ O = kmeans.cluster_centers_
 #S = cosum.computeAllWeightOfDocument(document)
 arr = kmeans.labels_.tolist()
 clusters = cosum.clusteringSentence(arr)
-print("Cq = ",clusters)
-random = [[4],[2],[0,1,6,9]]
+print("Cq = ",clusters,"\n")
 random_s = cosum.randomizer(clusters)
-index_sentences = cosum.mix(random)
-print(random)
-checkItData = stageOne(random,document)
-#print(stageTwo(checkItData))
-F(X,O,Sentences,random_s)
-# X - is array of clusters.
-# X = [q1,q2,q3]
-#X = kmeans.labels_
-#data = Initialization(S)
-#
-
-
-
+print("Были выбраны предложения с индексами : ",random_s)
+checkItData = stageOne(random_s,document)
+print("Проверка на условия: ",checkItData)
+print("Результат :",stageTwo(checkItData))
+print("F(X) =",F(X,O,Sentences,random_s))
 

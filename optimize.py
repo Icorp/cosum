@@ -15,40 +15,41 @@ l_max = 100
 #The evaluation function is an operation to evaluate how good the solution (sentence selection,i.e., summary) of each individual is, making comparison between different solutions possible. 
 #The evaluation function consists of calculating the value of the objective function (9) of the summary
 #represented by each individual.
-def F(X,O,sentences,random_s):
-    index_sentences = mix(random_s)
+def F(X,O,sentences,random):
+    index_sentences = mix(random)
     final_sentences = selectSentences(index_sentences,sentences)
     text = ' '.join(final_sentences)
     count = 0
-    for listElem in random_s:
+    for listElem in random:
         count += len(listElem)   
-    print("Number of sentences =",count)
-    s = computeAllWeightOfDocument(text)
-    f_cov = f_cover(O,X,s,text)
-    print("F_COVER =",f_cov)
-    f_div = f_diver(X,s)
-    print("F_DIVER =",f_div)
+    print("Количество предложении =",count)
+    w = computeAllWeightOfDocument(text)
+    f_cov = f_cover(O,random,w)
+    #print("F_COVER =",f_cov)
+    f_div = f_diver(random,w)
+    #print("F_DIVER =",f_div)
     return round((2*f_cov*f_div)/(f_cov+f_div),3)
 
-def f_cover(O,X,s,text):
-    cash2 = computeMatrixSimRRN(text)
+# O - it is cluster centers. O [[],[],[]]
+# index_sentences - 
+def f_cover(O,x,s):
     summ = 0
-    k = len(X)
+    k = len(x)
     for q in range(k):
-        n = X[q].count(1)
+        n = len(x[q])
         for i in range(n):
-            summ +=computeSimClustering(s[i],O[q])*X[q][i]
-    return summ
+            summ +=computeSimClustering(s[i],O[q])*x[q][i]
+    return round(summ,3)
 
-def f_diver(X,S):
+def f_diver(X,w):
     k = len(X)
     summ = 0
     result = 0   
     for q in range(k):
-        n = X[q].count(1)
-        summ += funcSum4(n,S,q,X)
-        result += (2/n*(n-1))*summ
-    return result
+        nq = len((X[q]))
+        summ += funcSum4(nq,w,q,X)
+        result += (2/nq*(nq-1))*summ
+    return round(result,3)
 
 def stageOne(x,document):
     sentences = sent_tokenize(document)
@@ -75,7 +76,8 @@ def stageTwo(status):
     if all(status) == True:
         stageThree()
     else:
-        print("Не соответствует требованиям")
+        return "Не соответствует требованиям"
+
 def stageThree():
     result = F()
     print("F(x) = ",result)

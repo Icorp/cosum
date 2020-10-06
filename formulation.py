@@ -21,7 +21,6 @@ def funcSum3(w):
     return round(seqSum,3)
 
 def funcSum4(nq,S,q,X):
-    print(S)
     summ = 0
     n = nq - 1
     for i in range(n):
