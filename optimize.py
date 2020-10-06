@@ -1,5 +1,4 @@
 import numpy as np
-import sys
 from cosum import computeSimClustering
 from cosum import computeAllWeightOfDocument
 from cosum import labelInMatrix
@@ -12,9 +11,9 @@ from nltk.tokenize import word_tokenize
 from sklearn.cluster import KMeans
 
 l_max = 100
-#The evaluation function is an operation to evaluate how good the solution (sentence selection,i.e., summary) of each individual is, making comparison between different solutions possible. 
-#The evaluation function consists of calculating the value of the objective function (9) of the summary
-#represented by each individual.
+
+#Our objective function combines two objectives of coverage f cover (X) (relevance of a summary is the amount of relevant information the summary
+#contains) and diversity f diver (X) (summary should not contain multiple sentences that convey the same information):
 def F(X,O,sentences,random):
     index_sentences = mix(random)
     final_sentences = selectSentences(index_sentences,sentences)
@@ -31,16 +30,19 @@ def F(X,O,sentences,random):
     return round((2*f_cov*f_div)/(f_cov+f_div),3)
 
 # O - it is cluster centers. O [[],[],[]]
-# index_sentences - 
-def f_cover(O,x,s):
+# x - [[2,3,4,5],[5,23,46,5],[...]]
+# w - weight of sentences. [[w11..w1n],[w21..w2n],[...]]
+def f_cover(O,x,w):
     summ = 0
     k = len(x)
     for q in range(k):
         n = len(x[q])
         for i in range(n):
-            summ +=computeSimClustering(s[i],O[q])*x[q][i]
+            summ +=computeSimClustering(w[i],O[q])*x[q][i]
     return round(summ,3)
 
+# X - index_sentences [[2,3,4,5],[5,23,46,5],[...]]
+# w - weight of sentences. [[w11..w1n],[w21..w2n],[...]]
 def f_diver(X,w):
     k = len(X)
     summ = 0
@@ -51,6 +53,11 @@ def f_diver(X,w):
         result += (2/nq*(nq-1))*summ
     return round(result,3)
 
+# This stage check all statements. 
+# li*x[i][q] <= Lavg
+# li*x[i][q] <= Lmax
+# Lmax = 100
+# lavg = number of words / number of sentences
 def stageOne(x,document):
     sentences = sent_tokenize(document)
     l_avg = len(word_tokenize(document))/len(sentences)
@@ -72,12 +79,23 @@ def stageOne(x,document):
             else:
                 result[i] == False
     return result
-def stageTwo(status):
+
+# If all element in array are True. Go to next method stageThree()
+def stageTwo(status,X,O,sentences,random):
     if all(status) == True:
-        stageThree()
+        stageThree(X,O,sentences,random)
     else:
         return "Не соответствует требованиям"
 
-def stageThree():
-    result = F()
+# Compute F(X).
+def stageThree(X,O,sentences,random):
+    result = F(X,O,sentences,random)
     print("F(x) = ",result)
+
+# Main function for check all stage
+def optimize(X,O,sentences,random,document):
+    result_stage_one = stageOne(random,document)
+    if all(result_stage_one) == True:
+        stageThree(X,O,sentences,random)
+    else:
+        return "Не соответствует требованиям"
