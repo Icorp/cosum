@@ -47,6 +47,7 @@ def computeAllWeightOfDocument(document):
     for i in range(len(sentences)):
         result.append(computeWeightOfSentence(sentences[i],sentences,document))
     return result
+    
 def findWeightOfWord(sentence,word,text):
     TF = findNumWordInSentence(sentence,word.lower())
     return round(((TF)/(TF+0.5+(1.5*(len(tokenizeAndRemoveStopWord(sentence))/computeAverageSentenceLength(text,findSentences(text))))))*computeIDF(word.lower(),sentence,findSentences(text)),3)
