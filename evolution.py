@@ -51,7 +51,7 @@ def Initialization_exp(S):
             print("Не выбрано предложение в одной из кластеров!")
             print("ReStart Initialization ...")
             return Initialization_exp(S)
-    return result
+    return result,cash2
  
 def finalInit(S,t):
     print("start")
@@ -67,16 +67,20 @@ def inertia_weight(t):
 def crossover():
     return something
 
-def Vp(best_global,best_local,sent,t):
-    print("Start Vp mutation ...")
-    print("sent",sent)
+def Vp(best_global,best_local,vector,t):
+    #print("Start Vp mutation ...")
+    #print("Vector",vector)
     result = []
     w = inertia_weight(t)
     f = scaling_factor(t)
-    print("FINISH VP \n")
-    #for s in range(len(sent[t])):
-        #vp = w*best_local[s]+f*(best_local[s]-sent[s])+(1-f)*(best_global[s]-sent[s])
-    #print("V_p,s(",t,")",vp)
+    for q in range(len(vector)):
+        cash = []
+        for s in range(len(vector[q])):
+            vps = w*best_local[q][s]+f*(best_local[q][s]-vector[q][s])+(1-f)*(best_global[q][s]-vector[q][s])
+            cash.append(round(vps,3))
+        result.append(cash)
+    #print("V_p,s(",t,")",result)
+    return result
     #return round(w*U_local+f*(Ul-u)+(1-f)*(Ug-u),3)
 def finalVp():
     result = []

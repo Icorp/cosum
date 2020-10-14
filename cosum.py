@@ -179,6 +179,19 @@ def randomizer(arr):
         sampling = random.sample(arr[i], k)
         result.append(sampling)
     return result
+def randomizer_3(arr):
+    result = []
+    for i in range(len(arr)):
+        sampling = random.sample(arr[i], 1)
+        result.append(sampling)
+    return result
+
+def randomizer_6(arr):
+    result = []
+    for i in range(len(arr)):
+        sampling = random.sample(arr[i], 2)
+        result.append(sampling)
+    return result
 
 def mix(arr):
     result = []
@@ -199,3 +212,10 @@ def compute_sim_opt(w1,w2):
     f3 = funcSum3(w1)
     f4 = funcSum3(w2)
     return round(1-((2*(f1)*f2)/((f3*f1)+(f4*f2))),3)
+
+def get_summary(random_s,sentences):
+    result = []
+    for i in range(len(random_s)):
+        for k in range(len(random_s[i])):
+            result.append(sentences[random_s[i][k]])
+    return result
