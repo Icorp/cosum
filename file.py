@@ -2,6 +2,7 @@ import pickle
 import json
 import numpy as np
 from cosum import listToString
+import re
 
 def writeToFile(data,fileName):
     with open('listfile.data', 'wb') as filehandle:
@@ -25,6 +26,16 @@ def saveStats(hypothesis,fx,indexs,summary,scores):
     indexs = listToString(indexs)
     rouge = str(scores[0].get('rouge-1').get('r'))
     result = "Fx = "+fx+"\t"+"Indexs = "+indexs+"\t"+"Rouge = "+rouge+"\n"
-    f = open('stats.txt', 'a') 
+    f = open('results/stats.txt', 'a') 
     f.write(result)
     f.close()
+
+def readText(name):
+    f = open(name,"r",encoding="utf-8",)
+    f =f.read()
+    text = re.findall(r'(<TEXT>.+?</TEXT>)', f,flags=re.DOTALL)
+    text = text[0].replace("\n"," ")
+    text = text.replace(".;",".")
+    text = text.replace('<TEXT>','')
+    text = text.replace('</TEXT>','')
+    return text
