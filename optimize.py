@@ -1,5 +1,6 @@
 import numpy as np
 import sys
+import cosum
 from cosum import computeSimClustering
 from cosum import computeAllWeightOfDocument
 from cosum import labelInMatrix
@@ -81,7 +82,7 @@ def stageOne(x,summary,document):
 def stageTwo(li):
     print("\nПроверка II. Количество слов в вашем summary должно быть меньше l_max = 100  ???")
     print("Всего слов => ",li)
-    if li <=100:
+    if li <=l_max:
         print("Результат: Успешный!")
         return True
     else:
@@ -96,22 +97,43 @@ def stageThree(X,O,sentences,random,Cq,summary):
     result = F(X,O,sentences,random,Cq)
     print("F(x) = ",result)
     if result > 0:
-        return summary
+        return summary,result
     else:
         return "F(x) not working"
 
-def startTest(random_s,summary_index,document,X,O,Cq,summary):
+def startTest(clusters,document,X,O,Cq,Sentences):
     sentences = sent_tokenize(document)
     
-    st_1,summ = stageOne(random_s,summary_index,document)
-    print("Результат(I) :",st_1,"\n")
+    while True:
+        
+        random_s = cosum.randomizer_6(clusters)
+        summary_index = cosum.get_summary(random_s,Sentences)
+        print(summary_index)
+        summary = ''.join(summary_index)
+        print("random = >",random_s)
+        #random_s = [[43,41],[14,36],[29,25]]
+        print("Были выбраны предложения с индексами : ",random_s)
+        st_1,summ = stageOne(random_s,summary_index,document)
+        print("Результат(I) :",st_1,"\n")
+        if all(st_1) == True:
+            st_2 = stageTwo(summ)
+            if st_2 == True:
+                a,b = stageThree(X,O,sentences,random_s,Cq,summary) 
+                return a,b,random_s,summary
+                break
+            else:
+                print("Stage II: No")
+        else:
+            print("Stage I: NO")
+    """
     if all(st_1) == True:
         st_2 = stageTwo(summ)
         if st_2 == True:
             a = stageThree(X,O,sentences,random_s,Cq,summary)
-        return a
+            return a
+    
     else:
         print("Не прошел первый этап !!!")
         sys.exit()
-        
+    """    
     

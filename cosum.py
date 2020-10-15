@@ -219,3 +219,9 @@ def get_summary(random_s,sentences):
         for k in range(len(random_s[i])):
             result.append(sentences[random_s[i][k]])
     return result
+def listToString(s):
+    # initialize an empty string 
+    str1 = " " 
+    
+    # return string   
+    return (str1.join(str(x) for x in s)) 

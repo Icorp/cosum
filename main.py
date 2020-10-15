@@ -16,6 +16,7 @@ from sklearn.cluster import KMeans
 from file import writeToFile
 from file import readFile
 from file import writeToJson
+from file import saveStats
 from optimize import stageOne
 from optimize import stageTwo
 from optimize import stageThree
@@ -24,7 +25,7 @@ from optimize import startTest
 from rouge import Rouge 
 import sys
 
-f = open('SJMN91-06184003.txt',"r",encoding="utf-8",)
+f = open('training/AP880310-0257',"r",encoding="utf-8",)
 f =f.read()
 a = re.findall(r'(<TEXT>.+?</TEXT>)', f,flags=re.DOTALL)
 a = a[0].replace("\n"," ")
@@ -50,15 +51,10 @@ O = kmeans.cluster_centers_
 arr = kmeans.labels_.tolist()
 clusters = cosum.clusteringSentence(arr)
 print("Cq = ",clusters,"\n")
-random_s = cosum.randomizer_6(clusters)
-#random_s = [[43,41],[14,36],[29,25]]
-print("Были выбраны предложения с индексами : ",random_s)
 
-summary_index = cosum.get_summary(random_s,Sentences)
-print(summary_index)
-summary = ''.join(summary_index)
-print("random = >",random_s)
-hypothesis = startTest(random_s,summary_index,document2,X,O,clusters,summary)
+
+
+hypothesis,fx,indexs,summary = startTest(clusters,document2,X,O,clusters,Sentences)
 
 
 #print(X)
@@ -68,6 +64,7 @@ population = 2
 random_all_fx = []
 random_best_fx = []
 random_all_sent = []
+
 def start():
     result = []
     
@@ -115,9 +112,11 @@ def start():
     return result
 
 
-reference = "Clarence Thomas, black nominee to the Supreme Court, comes from a childhood in segregated Georgia where he was taught the ethic of hard work, self discipline, and independence. He went north to college at Holy Cross. By the time he entered Yale Law School he was described as a freewheeling liberal. Brilliant conservative law professors and the writings of a conservative black economist had a profound influence on Thomas.  In his service in various state and federal positions and on the U.S. Court of Appeals he has been a proponent of personal strength over dependence and individualism over government activism."
+reference = "Senators McClure (R) and Metzenbaum (D) have sponsored bills to prevent plastic guns from slipping through airport security.  The gun, not yet manufactured, is intended for military and police use. Metzenbaum's bill would require some detectable metal content; McClure's would require more sensitive detection equipment at airports, almost certainly causing passenger delays. The NRA opposes the first federal gun ban bill in America, and warns members their guns will soon be inspected and weighed by government agents. However, on this issue they will compromise, not to ban the gun, but to increase airport security.  Handgun control advocates and law enforcement officials back Metzenbaum's proposal."
 
 rouge = Rouge()
 scores = rouge.get_scores(hypothesis, reference)
 print(scores)
-
+print(hypothesis)
+print("Saving file ...")
+print(saveStats(hypothesis,fx,indexs,summary,scores))

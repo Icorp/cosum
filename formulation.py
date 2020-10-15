@@ -1,5 +1,6 @@
 import itertools
 import cosum
+
 def funcSum(w1,w2):
     seqSum=0.0
     for d,f in itertools.zip_longest(w1,w2,fillvalue=0):
@@ -26,5 +27,6 @@ def funcSum4(nq,S,q,X):
     for i in range(n):
         for j in range(nq):
             j = i+1
-            summ +=(1-cosum.computeSimClustering(S[i],S[j])*X[q][i]*X[q][j])
+            similarity = cosum.computeSimClustering(S[i],S[j]) 
+            summ +=(1-similarity*X[q][i]*X[q][j])
     return round(summ,3)

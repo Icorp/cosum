@@ -6,4 +6,4 @@ reference = "this page includes the show transcript use the transcript to help s
 
 rouge = Rouge()
 scores = rouge.get_scores(hypothesis, reference)
-print(scores)
+print(scores[0].get('rouge-1').get('r'))
