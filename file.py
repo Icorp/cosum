@@ -13,22 +13,17 @@ def readFile():
         # сохраняем данные как двоичный поток
         placesList = pickle.load(filehandle)
     return placesList
-def writeToJson(data,fileName):
-    a_file = open(fileName, "w")
-    for row in data:
-        np.savetxt(a_file, row)
-    a_file.close()
-    print("Writing file")
-    print("Status:Ok")
 
 def saveStats(hypothesis,fx,indexs,summary,scores):
     fx = str(fx)
     indexs = listToString(indexs)
-    rouge = str(scores[0].get('rouge-1').get('r'))
+    rouge = str(round(scores[0].get('rouge-1').get('r'),3))
     result = "Fx = "+fx+"\t"+"Indexs = "+indexs+"\t"+"Rouge = "+rouge+"\n"
     f = open('results/stats.txt', 'a') 
     f.write(result)
     f.close()
+    print("Writing file")
+    print("Status:Ok")
 
 def readText(name):
     f = open(name,"r",encoding="utf-8",)
@@ -38,4 +33,5 @@ def readText(name):
     text = text.replace(".;",".")
     text = text.replace('<TEXT>','')
     text = text.replace('</TEXT>','')
+    print("TEXT =>\n\n",text)
     return text

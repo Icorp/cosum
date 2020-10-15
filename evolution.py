@@ -112,3 +112,49 @@ def Beta(t):
 def best_local(fx):
     result = max(fx)
     return result
+
+def start():
+    result = []
+    
+    # Создаем популяции
+    for p in range(population):   
+        optimize = []          # Лист для хранения fx()
+        sent = []              # Лист для хранения индексов предложения        
+        random_s = 0.0          # Лист для хранения вектора
+        vector = list
+        for m in range(t_max):
+            random_s,vector = Initialization_exp(X)
+            fx = F(X,O,Sentences,random_s)
+            optimize.append(fx)
+            sent.append(random_s)
+            random_all_sent.append(vector)
+        random_all_fx.append(optimize)
+        # Создаем особь для популяции. Количество задано в t_max
+        for t in range(t_max):
+            print("Популяция #",p+1)
+            print("Особь #",t+1,"\n")
+            best_local = max(optimize)          # Находим максимальное значение f(x), среди t генерации.Это будет best_local  
+            print("Best_local",best_local)
+            all_fx_mixed = []
+            # Проверяем на пустату популяции если пусто global = local
+            if len(random_all_fx)==0:
+                best_global = max(optimize)
+            else:
+                print("Search GLOBAL BEST ....")
+                all_fx_mixed = cosum.mix(random_all_fx)
+                print("ALL fx => ",all_fx_mixed)
+                best_global = max(all_fx_mixed)
+                print("Best global fx(X)",best_global)
+                index_g = all_fx_mixed.index(best_global)
+                print("Index of the best global",index_g)
+
+
+            # Вытаскиваем индексы лучших предложении ,из предложении sent.
+            index_l = optimize.index(best_local)
+            #print("GLOBAL Index",random_all_sent)
+            #print("LOCAL Index",random_all_sent)
+            
+            # Пытаемся мутировать лучший вариант
+            result.append(Vp(random_all_sent[index_g],random_all_sent[index_l],random_all_sent[t],t))
+            #crossover(resukt)
+    return result

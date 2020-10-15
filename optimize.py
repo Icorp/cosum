@@ -70,13 +70,15 @@ def stageOne(x,summary,document):
     summ = 0
     print("Summary = ",summary)
     for k in range(len(summary)):
-        num_of_word = len(word_tokenize(summary[k]))
+        tokens = word_tokenize(summary[k])
+        num_of_word = len(tokens)
         summ +=num_of_word
         if(num_of_word)<=l_avg:
             result.append(True)
         else:
             result.append(False)
         print("Количество слов в {} предложении".format(k+1),num_of_word)
+        print("Tokens:",tokens,"\n\n")
     
     return result,summ
 def stageTwo(li):
