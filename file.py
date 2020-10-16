@@ -5,11 +5,11 @@ from cosum import listToString
 import re
 
 def writeToFile(data,fileName):
-    with open('listfile.data', 'wb') as filehandle:
+    with open('files/listfile.data', 'wb') as filehandle:
         pickle.dump(data, filehandle)
 
 def readFile():
-    with open('listfile.data', 'rb') as filehandle:  
+    with open('files/listfile.data', 'rb') as filehandle:  
         # сохраняем данные как двоичный поток
         placesList = pickle.load(filehandle)
     return placesList

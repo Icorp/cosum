@@ -78,7 +78,7 @@ def stageOne(x,summary,document):
         else:
             result.append(False)
         print("Количество слов в {} предложении".format(k+1),num_of_word)
-        print("Tokens:",tokens,"\n\n")
+        print("Tokens:",tokens,"\n\n    ")
     
     return result,summ
 def stageTwo(li):
