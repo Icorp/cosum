@@ -21,9 +21,9 @@ import sys
 
 document = readText("training/AP880310-0257")
 Sentences = sent_tokenize(document)
-#data = cosum.computeMatrixSimRRN(document2)
-#writeToFile(data,"Sim")
-data = np.array(readFile())
+data = cosum.computeMatrixSimRRN(document)
+writeToFile(data,"Sim")
+#data = np.array(readFile())
 kmeans = KMeans(n_clusters=3,random_state=42).fit(data)
 
 X = cosum.labelInMatrix(kmeans.labels_)
