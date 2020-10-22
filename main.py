@@ -17,18 +17,29 @@ from optimize import stageThree
 from optimize import F
 from optimize import startTest
 from rouge import Rouge 
+import matplotlib.pyplot as plt
 import sys
 
 document = readText("training/AP880310-0257")
 Sentences = sent_tokenize(document)
-data = cosum.computeMatrixSimRRN(document)
-writeToFile(data,"Sim")
+S = cosum.computeAllWeightOfDocument(document)
+a = cosum.computeClustering(S,3)
+print(a)
+#data = cosum.computeMatrixSimRRN(document)
+#writeToFile(data,"Sim")
 #data = np.array(readFile())
+#X = []
+#for i in range(len(Sentences)):
+#    X.append(cosum.computeWeightOfSentence(Sentences[i],Sentences,document))
+#data = cosum.toVector(X)
+#writeToFile(data,"Sim")
+data = np.array(readFile())
+words = cosum.final_token(document)
+
 kmeans = KMeans(n_clusters=3,random_state=42).fit(data)
 
 X = cosum.labelInMatrix(kmeans.labels_)
 O = kmeans.cluster_centers_
-#S = cosum.computeAllWeightOfDocument(document)
 
 #  S - is weight of all words in the document
 # S = [[w1,w2,...,wn],
@@ -37,8 +48,11 @@ O = kmeans.cluster_centers_
 #S = cosum.computeAllWeightOfDocument(document)
 arr = kmeans.labels_.tolist()
 clusters = cosum.clusteringSentence(arr)
+print(data)
 print("Cq = ",clusters,"\n")
-
+plt.scatter(data,data)
+plt.show()
+sys.exit()
 hypothesis,fx,indexs,summary = startTest(clusters,document,X,O,clusters,Sentences)
 
 

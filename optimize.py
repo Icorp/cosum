@@ -1,4 +1,3 @@
-import numpy as np
 import sys
 import cosum
 from cosum import computeSimClustering
@@ -10,7 +9,6 @@ from cosum import mix
 from formulation import funcSum4
 from nltk.tokenize import sent_tokenize
 from nltk.tokenize import word_tokenize
-from sklearn.cluster import KMeans
 
 l_max = 100
 
@@ -43,8 +41,10 @@ def f_cover(O,x,w):
             summ +=computeSimClustering(w[i],O[q])*x[q][i]
     return round(summ,3)
 
-# X - index_sentences [[2,3,4,5],[5,23,46,5],[...]]
-# w - weight of sentences. [[w11..w1n],[w21..w2n],[...]]
+#   The second term f diver (X) minimizes the sum of intersentence similarities among sentences chosen from each cluster.
+#   Equation (14)
+#   X - index_sentences [[2,3,4,5],[5,23,46,5],[...]]
+#   w - weight of sentences. [[w11..w1n],[w21..w2n],[...]]
 def f_diver(X,w,Cq):
     k = len(X)
     summ = 0
@@ -78,7 +78,6 @@ def stageOne(x,summary,document):
         else:
             result.append(False)
         print("Количество слов в {} предложении".format(k+1),num_of_word)
-        print("Tokens:",tokens,"\n\n    ")
     
     return result,summ
 def stageTwo(li):

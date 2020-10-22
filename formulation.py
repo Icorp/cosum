@@ -30,3 +30,4 @@ def funcSum4(nq,S,q,X):
             similarity = cosum.computeSimClustering(S[i],S[j]) 
             summ +=(1-similarity*X[q][i]*X[q][j])
     return round(summ,3)
+

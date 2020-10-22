@@ -1,6 +1,5 @@
 import pickle
 import json
-import numpy as np
 from cosum import listToString
 import re
 
@@ -33,5 +32,4 @@ def readText(name):
     text = text.replace(".;",".")
     text = text.replace('<TEXT>','')
     text = text.replace('</TEXT>','')
-    print("TEXT =>\n\n",text)
     return text

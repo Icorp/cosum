@@ -103,6 +103,7 @@ def computeMatrixSimRRN(document):
         result.append(cash)
     return result
 
+
 def findK(n,text):
     num_of_terms = len(final_token(text))
     num_of_words = len(findTokenAndLower(text))
@@ -110,12 +111,32 @@ def findK(n,text):
     return k
 
 
-def computeClustering(S,O,k,n,document):
-    summ = 0
-    for q in range(k):
-        for i in range(n):
-            summ += round(computeSimClustering(S[i],O[q]))
-    return round(summ,3)
+def computeClustering(S,q):
+    sentences = S
+    centroid = [] 
+    result = []
+    for k in range(q):
+        index = random.randint(0, len(sentences))
+        centroid.append(index)
+        sentences[k] = 0
+    for i in range(len(sentences)):
+        cash = []
+        for k in range(q):
+            if sentences[i] == 0:
+                cash.append(0)
+            else:
+                print("Start clustering...")
+                print("Centroid => ",centroid)
+                print("Loop #",k)
+                print("Sentence",sentences[i])
+                print("Sentence",sentences[centroid[k]])
+                cash.append(computeSimClustering(sentences[i],sentences[centroid[k]]))
+                    
+                index = cash.index(max(cash))
+                print("cash:",cash)
+                result.append(index)        
+        print("Centroids:",centroid)    
+    return result
 
 def computeSimClustering(S1,O):
     cash = []
@@ -130,7 +151,7 @@ def computeSimClustering(S1,O):
     f2 = funcSum2(S2,S2)
     f3 = funcSum3(S1)
     f4 = funcSum3(S2)
-    return 1-((2*f1*f2)/((f4*f1)+(f3*f2)))
+    return round(1-((2*f1*f2)/((f4*f1)+(f3*f2))),3)
 
 # M = number of compared methods =15
 # R = number of times the method appears in the rth rank
@@ -212,9 +233,30 @@ def get_summary(random_s,sentences):
         for k in range(len(random_s[i])):
             result.append(sentences[random_s[i][k]])
     return result
+    
 def listToString(s):
     # initialize an empty string 
     str1 = " " 
     
     # return string   
     return (str1.join(str(x) for x in s)) 
+
+def toVector(array):
+    cash = []
+    for i in range(len(array)):
+        cash.append(len(array[i]))
+    max_len = max(cash)
+    index = cash.index(max_len)
+    for i in range(len(array)):
+        a = len(array[i])
+        b = len(array[index])
+        for k in range(b-a):
+            array[i].append(0)
+    for q in range(len(array)):
+        print(len(array[q]))
+    return array
+
+def vectorize(text):
+
+
+            
