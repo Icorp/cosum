@@ -1,8 +1,8 @@
 import math
 import numpy as np
-import formulation
 import random
 from nltk import sent_tokenize
+from nltk import word_tokenize
 from time import perf_counter
 from findIt import findNumOfWord
 from findIt import tokenizeAndRemoveStopWord
@@ -16,6 +16,9 @@ from formulation import funcSum
 from formulation import funcSum2
 from formulation import funcSum3
 from formulation import funcSum4
+from formulation import funcSumExp
+from formulation import funcSumExp2
+from formulation import funcSumExp3
 
 
 # Find sentence
@@ -47,7 +50,26 @@ def computeAllWeightOfDocument(document):
     for i in range(len(sentences)):
         result.append(computeWeightOfSentence(sentences[i],sentences,document))
     return result
-    
+
+def computeFullWeight(text):
+    sent_tokens = sent_tokenize(text)
+    word_tokens = final_token(text)
+    result = []
+    for i in range(len(sent_tokens)):
+        cash = []
+        for m in range(len(word_tokens)):
+            cash.append(computeTDIDF(word_tokens[m],sent_tokens[i],sent_tokens,text))
+        result.append(cash)
+    return result
+        
+
+def computeTDIDF(word,sentence,sent_tokens,text):
+    TF = findNumWordInSentence(sentence,word.lower())
+    idf = computeIDF(word,sentence,sent_tokens)
+    l_avg = computeAverageSentenceLength(text,sent_tokens)
+    l_i = len(tokenizeAndRemoveStopWord(sentence))
+    return round(((TF)/(TF+0.5+(1.5*(l_i/l_avg))))*idf,3)
+
 def findWeightOfWord(sentence,word,text):
     TF = findNumWordInSentence(sentence,word.lower())
     return round(((TF)/(TF+0.5+(1.5*(len(tokenizeAndRemoveStopWord(sentence))/computeAverageSentenceLength(text,sent_tokenize(text))))))*computeIDF(word.lower(),sentence,sent_tokenize(text)),3)
@@ -63,6 +85,9 @@ def computeIDF(word,sentence,sentences):
         return 0
     else:
         return math.log10(len(sentences)/findNumSentencesSearchingWord(sentences,word.lower()))
+
+
+    
 
 def computeSimRRN(s1,s2,document,sentencesIndex):
     sentences = sent_tokenize(document)
@@ -90,7 +115,7 @@ def computeAllSimRRN(document):
 
 def computeMatrixSimRRN(document):
     print("Start compute weight ...")
-    w = computeAllWeightOfDocument(document)
+    w = computeFullWeight(document)
     print("finish = 100%")
     
     sentences = sent_tokenize(document)
@@ -108,7 +133,7 @@ def findK(n,text):
     num_of_terms = len(final_token(text))
     num_of_words = len(findTokenAndLower(text))
     k=n*(num_of_terms/num_of_words)
-    return k
+    return round(k,0)
 
 
 def computeClustering(S,q):
@@ -199,7 +224,6 @@ def randomizer_3(arr):
         sampling = random.sample(arr[i], 1)
         result.append(sampling)
     return result
-
 def randomizer_6(arr):
     result = []
     for i in range(len(arr)):
@@ -221,11 +245,11 @@ def selectSentences(arr,S):
     return result
 
 def compute_sim_opt(w1,w2):
-    f1 = funcSum(w1,w2)
-    f2 = funcSum2(w1,w2)
-    f3 = funcSum3(w1)
-    f4 = funcSum3(w2)
-    return round(1-((2*(f1)*f2)/((f3*f1)+(f4*f2))),3)
+    f1 = funcSumExp(w1,w2)
+    f2 = funcSumExp2(w1,w2)
+    f3 = funcSumExp3(w1)
+    f4 = funcSumExp3(w2)
+    return round(1-((2*f1*f2)/((f4*f1)+(f3*f2))),3)
 
 def get_summary(random_s,sentences):
     result = []
@@ -257,6 +281,19 @@ def toVector(array):
     return array
 
 def vectorize(text):
+    sent_tokens = sent_tokenize(text)
+    result = []
+    word_tokens = final_token(text)
+    for i in range(len(sent_tokens)):
+        cash = []
+        for w in range(len(word_tokens)):
+            cash.append(findNumWordInSentence(sent_tokens[i],word_tokens[w]))
+        result.append(cash)
+    print(sent_tokens)
+    print(word_tokens)
+    print(result)
+    return result
+    
 
 
             

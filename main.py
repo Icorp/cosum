@@ -50,9 +50,7 @@ arr = kmeans.labels_.tolist()
 clusters = cosum.clusteringSentence(arr)
 print(data)
 print("Cq = ",clusters,"\n")
-plt.scatter(data,data)
-plt.show()
-sys.exit()
+
 hypothesis,fx,indexs,summary = startTest(clusters,document,X,O,clusters,Sentences)
 
 

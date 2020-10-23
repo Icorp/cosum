@@ -31,3 +31,23 @@ def funcSum4(nq,S,q,X):
             summ +=(1-similarity*X[q][i]*X[q][j])
     return round(summ,3)
 
+def funcSumExp(w1,w2):
+    seqSum=0.0
+    for k in range(len(w1)):
+        cash=(w1[k]-w1[k]*w2[k])
+        seqSum+=cash
+    return round(seqSum,3)
+
+def funcSumExp2(w1,w2):
+    seqSum=0.0
+    for k in range(len(w1)):
+        cash=(w2[k]-w1[k]*w2[k])
+        seqSum+=cash
+    return round(seqSum,3)
+
+def funcSumExp3(w):
+    seqSum=0.0
+    for i in range(len(w)):
+        seqSum+=w[i]
+    return round(seqSum,3)
+
