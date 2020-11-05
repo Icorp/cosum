@@ -4,21 +4,22 @@ import random
 from nltk import sent_tokenize
 from nltk import word_tokenize
 from time import perf_counter
-from findIt import findNumOfWord
-from findIt import tokenizeAndRemoveStopWord
-from findIt import tokenizeRemoveAndStemm
-from findIt import findNumWordInSentence
-from findIt import findNumSentencesSearchingWord
-from findIt import finalTokenSentence
-from findIt import final_token
-from findIt import findTokenAndLower
-from formulation import funcSum
-from formulation import funcSum2
-from formulation import funcSum3
-from formulation import funcSum4
-from formulation import funcSumExp
-from formulation import funcSumExp2
-from formulation import funcSumExp3
+from cosum.findIt import findNumOfWord
+from cosum.findIt import tokenizeAndRemoveStopWord
+from cosum.findIt import tokenizeRemoveAndStemm
+from cosum.findIt import findNumWordInSentence
+from cosum.findIt import findNumSentencesSearchingWord
+from cosum.findIt import finalTokenSentence
+from cosum.findIt import final_token
+from cosum.findIt import findTokenAndLower
+from cosum.formulation import funcSum
+from cosum.formulation import funcSum2
+from cosum.formulation import funcSum3
+from cosum.formulation import funcSum4
+from cosum.formulation import funcSumExp
+from cosum.formulation import funcSumExp2
+from cosum.formulation import funcSumExp3
+from cosum.formulation import funcSumCenter
 
 
 # Find sentence
@@ -129,7 +130,8 @@ def computeMatrixSimRRN(document):
     return result
 
 
-def findK(n,text):
+def findK(text):
+    n = len(sent_tokenize(text))
     num_of_terms = len(final_token(text))
     num_of_words = len(findTokenAndLower(text))
     k=n*(num_of_terms/num_of_words)
@@ -177,6 +179,97 @@ def computeSimClustering(S1,O):
     f3 = funcSum3(S1)
     f4 = funcSum3(S2)
     return round(1-((2*f1*f2)/((f4*f1)+(f3*f2))),3)
+
+def computeSimilirity(tokens,centroids):
+    similarities = []
+    for i in range(len(tokens)):
+        cash = []
+        for k in range(len(centroids)):
+            cash.append(compute_sim_opt(tokens[i],centroids[k]))
+        similarities.append(cash)
+    return similarities
+
+def findLabels(similarities):
+    labels = []
+    for i in range(len(similarities)):
+        label = similarities[i].index(max(similarities[i]))
+        labels.append(label)
+    return labels
+
+def getCentroidValue(centroidsIndexs,tokens):
+    result = []
+    for k,v in enumerate(centroidsIndexs):
+        result.append(tokens[v])
+    return result
+
+def selectCenterOfCluster(k,text):
+    # Sentences...
+    sentences = sent_tokenize(text)
+
+    # Select random
+    a = random.sample(sentences,int(k))
+    
+    # Get index 
+    indexs = []
+    for i in range(len(a)):
+        indexs.append(sentences.index(a[i]))
+    return indexs
+    
+def calculateCenter(tokens,matrix,c):
+    result = []
+    for q in range(len(c)):
+        cash = []
+        for l in range(len(tokens[0])):
+            summ = funcSumCenter(tokens,c,l,q)
+            w = summ/matrix[q].count(1)
+            cash.append(round(w,3))
+        result.append(cash)
+    return result
+
+def computeOptimalCentroid(tokens,centroids,exit):
+    if exit == 0:
+        return centroids
+    # compute similarity
+    similarities = computeSimilirity(tokens,centroids)
+    #print("Similiraties:",similarities,"\n")
+    
+    # clustering result
+    labels = findLabels(similarities)
+    print("Labels:",labels,"\n")
+
+    # toMatrix
+    matrix = labelInMatrix(labels)
+    #print("Matrix:",matrix,"\n")
+        
+    # get index
+    c = getIndexCentroid(centroids,matrix)
+    print("C",c)
+
+    # calculate center
+    result = calculateCenter(tokens,matrix,c)
+    print(result)
+    cash = []
+    for s in range(len(result)):
+        a = set(centroids[s]) & set(result[s])
+        if len(a)==0:
+            cash.append(True)
+        else:
+            cash.append(False)
+    if False in cash:
+        computeOptimalCentroid(tokens,centroids,exit-1)
+    else:
+        return result
+
+
+def getIndexCentroid(centroids,matrix):
+    c = []
+    for q in range(len(centroids)):
+        cash = []
+        for i in range(len(matrix[q])):
+            if 1 == matrix[q][i]:
+                cash.append(i)
+        c.append(cash)
+    return c
 
 # M = number of compared methods =15
 # R = number of times the method appears in the rth rank

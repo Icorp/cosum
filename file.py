@@ -1,6 +1,6 @@
 import pickle
 import json
-from cosum import listToString
+from cosum.cosum import listToString
 import re
 
 def writeToFile(data,fileName):

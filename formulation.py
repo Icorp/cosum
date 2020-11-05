@@ -51,3 +51,13 @@ def funcSumExp3(w):
         seqSum+=w[i]
     return round(seqSum,3)
 
+def funcSumCenter(tokens,c,l,q):
+    seqSum=0.0
+    for i in range(len(tokens)):
+        if i in c[q]:
+            uiq = 1
+        else:
+            uiq = 0
+        seqSum += tokens[i][l]*uiq
+    return round(seqSum,3)
+

@@ -10,7 +10,7 @@ good results, making this a promising area. In this paper, for a text summarizat
 two‐stage sentences selection model based on clustering and optimization techniques, called COSUM, is proposed.
 
 
-# Stage One
+# Step One
 
 
 Let `T = {t1, t2, …, tm}` represents all the distinct terms occurred in the document D, where m is the number of terms. Using the vector space model,
@@ -35,7 +35,7 @@ print(tokens)
 [[0.0, 0.201, 0.0, 0.0, 0.0], [0.0, 0.0, 0.201, 0.0, 0.0], [0.0, 0.0, 0.0, 0.201, 0.0], [0.0, 0.0, 0.0, 0.0, 0.201]]
 ```
 
-# Stage Two
+# Step Two
 
 After representation of sentences, now we can calculate the similarity between them. Intuitively, if there are many common words between
 two sentences, they are very similar. Let given two sentences `Si = [wi1, …, wim]` and `Sj = [wj1, …, wjm]`. Then to measure similarity between them, we
@@ -69,3 +69,28 @@ Similarity(S, 4 , S 2 ) 0.008
 Similarity(S, 4 , S 3 ) 0.014
 Similarity(S, 4 , S 4 ) 0.202
 ```
+
+# Step Three
+## Clustering
+
+In this stage, the sentences are clustered into different groups to discover latent subtopic information in the document D. Generally, automatic
+clustering is a process of dividing a set of objects into unknown groups, where the clustering algorithm determines the best number k of groups
+(or clusters). That is, objects within each group should be highly similar to each other than to objects in any other group. The automatic clustering
+problem can be defined as follows.
+
+`X = {x1, x2, …, xn}`
+
+`U = [uiq] (i = 1, 2, …, n and q = 1, 2, …, k)`
+
+### Step 1. 
+Let k be the number of clusters. In this study, it is defined by Equation (8).
+
+![Image of Yaktocat](images/findK.png)
+
+
+### Step 2. 
+Initialize the centres to k random locations in the collection D = {S1, …, Sn} and calculate the mean centre of each cluster, Oq, where Oq is the centre of cluster Cq.
+### Step 3. 
+Calculate the similarity from the centre of each cluster to each input sentence vector, and assign each input sentence vector to the cluster where the similarity between itself and Oq is maximal. Recompute Oq for all clusters that have inherited a new input sentence vector, and update each cluster centre (if there are no changes within the cluster centres, discontinue recomputation).
+### Step 4. 
+Repeat Step 3 until all the sentences are assigned to their optimal cluster centres. This ends the cluster updating procedure with k disjoint subsets.

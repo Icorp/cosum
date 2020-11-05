@@ -22,9 +22,8 @@ import sys
 
 document = readText("training/AP880310-0257")
 Sentences = sent_tokenize(document)
-S = cosum.computeAllWeightOfDocument(document)
-a = cosum.computeClustering(S,3)
-print(a)
+#S = cosum.computeAllWeightOfDocument(document)
+#print(a)
 #data = cosum.computeMatrixSimRRN(document)
 #writeToFile(data,"Sim")
 #data = np.array(readFile())
