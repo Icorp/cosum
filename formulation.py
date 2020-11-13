@@ -61,3 +61,24 @@ def funcSumCenter(tokens,c,l,q):
         seqSum += tokens[i][l]*uiq
     return round(seqSum,3)
 
+
+# for numpy
+def funcSumNP1(w1,w2):
+    seqSum=0.0
+    for k in range(len(w1)):
+        cash=(w1[k]-w1[k]*w2[k])
+        seqSum+=cash
+    return round(seqSum,3)
+
+def funcSumNP2(w1,w2):
+    seqSum=0.0
+    for k in range(len(w1)):
+        cash=(w2[k]-w1[k]*w2[k])
+        seqSum+=cash
+    return round(seqSum,3)
+
+def funcSumNP3(w):
+    seqSum=0.0
+    for i in range(len(w)):
+        seqSum+=w[i]
+    return round(seqSum,3)

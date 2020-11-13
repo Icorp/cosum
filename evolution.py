@@ -1,5 +1,6 @@
 from math import exp
 import random
+import logging as log
 from optimize import F
 # CR = 0.7
 # B- = 0.1
@@ -48,13 +49,13 @@ def Initialization_exp(S):
     # Check on null list
     for i in range(len(result)):
         if not result[i]:
-            print("Не выбрано предложение в одной из кластеров!")
-            print("ReStart Initialization ...")
+            log.info("Не выбрано предложение в одной из кластеров!")
+            log.info("ReStart Initialization ...")
             return Initialization_exp(S)
     return result,cash2
  
 def finalInit(S,t):
-    print("start")
+    log.info("start")
 
 # T - current generation
 # T_max - 1000
@@ -131,22 +132,22 @@ def start():
         random_all_fx.append(optimize)
         # Создаем особь для популяции. Количество задано в t_max
         for t in range(t_max):
-            print("Популяция #",p+1)
-            print("Особь #",t+1,"\n")
+            log.info("Популяция #",p+1)
+            log.info("Особь #",t+1,"\n")
             best_local = max(optimize)          # Находим максимальное значение f(x), среди t генерации.Это будет best_local  
-            print("Best_local",best_local)
+            log.info("Best_local",best_local)
             all_fx_mixed = []
             # Проверяем на пустату популяции если пусто global = local
             if len(random_all_fx)==0:
                 best_global = max(optimize)
             else:
-                print("Search GLOBAL BEST ....")
+                log.info("Search GLOBAL BEST ....")
                 all_fx_mixed = cosum.mix(random_all_fx)
-                print("ALL fx => ",all_fx_mixed)
+                log.info("ALL fx => ",all_fx_mixed)
                 best_global = max(all_fx_mixed)
-                print("Best global fx(X)",best_global)
+                log.info("Best global fx(X)",best_global)
                 index_g = all_fx_mixed.index(best_global)
-                print("Index of the best global",index_g)
+                log.info("Index of the best global",index_g)
 
 
             # Вытаскиваем индексы лучших предложении ,из предложении sent.

@@ -1,9 +1,9 @@
 import pickle
 import json
-from cosum.cosum import listToString
+from cosum import listToString
 import re
 
-def writeToFile(data,fileName):
+def writeToFile(data):
     with open('files/listfile.data', 'wb') as filehandle:
         pickle.dump(data, filehandle)
 

@@ -1,25 +1,27 @@
 import math
 import numpy as np
 import random
+import logging as log
+import sys
 from nltk import sent_tokenize
 from nltk import word_tokenize
 from time import perf_counter
-from cosum.findIt import findNumOfWord
-from cosum.findIt import tokenizeAndRemoveStopWord
-from cosum.findIt import tokenizeRemoveAndStemm
-from cosum.findIt import findNumWordInSentence
-from cosum.findIt import findNumSentencesSearchingWord
-from cosum.findIt import finalTokenSentence
-from cosum.findIt import final_token
-from cosum.findIt import findTokenAndLower
-from cosum.formulation import funcSum
-from cosum.formulation import funcSum2
-from cosum.formulation import funcSum3
-from cosum.formulation import funcSum4
-from cosum.formulation import funcSumExp
-from cosum.formulation import funcSumExp2
-from cosum.formulation import funcSumExp3
-from cosum.formulation import funcSumCenter
+from findIt import findNumOfWord
+from findIt import tokenizeAndRemoveStopWord
+from findIt import tokenizeRemoveAndStemm
+from findIt import findNumWordInSentence
+from findIt import findNumSentencesSearchingWord
+from findIt import finalTokenSentence
+from findIt import final_token
+from findIt import findTokenAndLower
+from formulation import funcSum
+from formulation import funcSum2
+from formulation import funcSum3
+from formulation import funcSum4
+from formulation import funcSumExp
+from formulation import funcSumExp2
+from formulation import funcSumExp3
+from formulation import funcSumCenter
 
 
 # Find sentence
@@ -82,7 +84,7 @@ def findWeightOfWordOpt(sentence,word,Lavg,tokens,sentences):
 
 def computeIDF(word,sentence,sentences):
     if findNumSentencesSearchingWord(sentences,word.lower()) == 0:
-        print("Данного слова в этом документ нет, введите словo из документа.")
+        log.error("Данного слова в этом документ нет, введите словo из документа.")
         return 0
     else:
         return math.log10(len(sentences)/findNumSentencesSearchingWord(sentences,word.lower()))
@@ -98,33 +100,32 @@ def computeSimRRN(s1,s2,document,sentencesIndex):
     f2 = funcSum2(w1,w2)
     f3 = funcSum3(w1)
     f4 = funcSum3(w2)
-    print("S"+str(sentencesIndex[0])," == ","S"+str(sentencesIndex[1]),"OK","time:"+str(perf_counter()))
+    log.info("S"+str(sentencesIndex[0])," == ","S"+str(sentencesIndex[1]),"OK","time:"+str(perf_counter()))
     return round(1-((2*(f1)*f2)/((f3*f1)+(f4*f2))),3)
 
 def computeAllSimRRN(document):
-    print("Start compute weight ...")
+    log.info("Start compute weight ...")
     w = computeAllWeightOfDocument(document)
-    print("finish = 100%")
+    log.info("finish = 100%")
     
     sentences = sent_tokenize(document)
     result = []
     for i,x in enumerate(sentences):
         for k,y in enumerate(sentences):
-            print("S"+str(i)," == ","S"+str(k),"OK","time:"+str(perf_counter()))
+            log.info("S"+str(i)," == ","S"+str(k),"OK","time:"+str(perf_counter()))
             result.append(compute_sim_opt(w[i],w[k]))
     return result
 
 def computeMatrixSimRRN(document):
-    print("Start compute weight ...")
+    log.info("Start compute weight ...")
     w = computeFullWeight(document)
-    print("finish = 100%")
+    log.info("finish = 100%")
     
     sentences = sent_tokenize(document)
     result = []
     for i,x in enumerate(sentences):
         cash = []
         for k,y in enumerate(sentences):
-            #print("S"+str(i)," == ","S"+str(k),"OK","time:"+str(perf_counter()))
             cash.append(compute_sim_opt(w[i],w[k]))
         result.append(cash)
     return result
@@ -152,55 +153,25 @@ def computeClustering(S,q):
             if sentences[i] == 0:
                 cash.append(0)
             else:
-                print("Start clustering...")
-                print("Centroid => ",centroid)
-                print("Loop #",k)
-                print("Sentence",sentences[i])
-                print("Sentence",sentences[centroid[k]])
+                log.info("Start clustering...")
+                log.info("Centroid => ",centroid)
+                log.info("Loop #",k)
+                log.info("Sentence",sentences[i])
+                log.info("Sentence",sentences[centroid[k]])
                 cash.append(computeSimClustering(sentences[i],sentences[centroid[k]]))
                     
                 index = cash.index(max(cash))
-                print("cash:",cash)
+                log.info("cash:",cash)
                 result.append(index)        
-        print("Centroids:",centroid)    
+        log.info("Centroids:",centroid)    
     return result
 
-def computeSimClustering(S1,O):
-    cash = []
-    if isinstance(O[0],np.float64):
-        for i in range(O.size):
-            k = float(O[i])
-            cash.append(k)
-        S2 = cash
-    else:
-        S2 = O
+def computeSimClustering(S1,S2):
     f1 = funcSum(S1,S2)
     f2 = funcSum2(S2,S2)
     f3 = funcSum3(S1)
     f4 = funcSum3(S2)
     return round(1-((2*f1*f2)/((f4*f1)+(f3*f2))),3)
-
-def computeSimilirity(tokens,centroids):
-    similarities = []
-    for i in range(len(tokens)):
-        cash = []
-        for k in range(len(centroids)):
-            cash.append(compute_sim_opt(tokens[i],centroids[k]))
-        similarities.append(cash)
-    return similarities
-
-def findLabels(similarities):
-    labels = []
-    for i in range(len(similarities)):
-        label = similarities[i].index(max(similarities[i]))
-        labels.append(label)
-    return labels
-
-def getCentroidValue(centroidsIndexs,tokens):
-    result = []
-    for k,v in enumerate(centroidsIndexs):
-        result.append(tokens[v])
-    return result
 
 def selectCenterOfCluster(k,text):
     # Sentences...
@@ -214,62 +185,6 @@ def selectCenterOfCluster(k,text):
     for i in range(len(a)):
         indexs.append(sentences.index(a[i]))
     return indexs
-    
-def calculateCenter(tokens,matrix,c):
-    result = []
-    for q in range(len(c)):
-        cash = []
-        for l in range(len(tokens[0])):
-            summ = funcSumCenter(tokens,c,l,q)
-            w = summ/matrix[q].count(1)
-            cash.append(round(w,3))
-        result.append(cash)
-    return result
-
-def computeOptimalCentroid(tokens,centroids,exit):
-    if exit == 0:
-        return centroids
-    # compute similarity
-    similarities = computeSimilirity(tokens,centroids)
-    #print("Similiraties:",similarities,"\n")
-    
-    # clustering result
-    labels = findLabels(similarities)
-    print("Labels:",labels,"\n")
-
-    # toMatrix
-    matrix = labelInMatrix(labels)
-    #print("Matrix:",matrix,"\n")
-        
-    # get index
-    c = getIndexCentroid(centroids,matrix)
-    print("C",c)
-
-    # calculate center
-    result = calculateCenter(tokens,matrix,c)
-    print(result)
-    cash = []
-    for s in range(len(result)):
-        a = set(centroids[s]) & set(result[s])
-        if len(a)==0:
-            cash.append(True)
-        else:
-            cash.append(False)
-    if False in cash:
-        computeOptimalCentroid(tokens,centroids,exit-1)
-    else:
-        return result
-
-
-def getIndexCentroid(centroids,matrix):
-    c = []
-    for q in range(len(centroids)):
-        cash = []
-        for i in range(len(matrix[q])):
-            if 1 == matrix[q][i]:
-                cash.append(i)
-        c.append(cash)
-    return c
 
 # M = number of compared methods =15
 # R = number of times the method appears in the rth rank
@@ -317,6 +232,7 @@ def randomizer_3(arr):
         sampling = random.sample(arr[i], 1)
         result.append(sampling)
     return result
+    
 def randomizer_6(arr):
     result = []
     for i in range(len(arr)):
@@ -324,6 +240,7 @@ def randomizer_6(arr):
         result.append(sampling)
     return result
 
+#  [[0,1],[0,1]]  ==>  [0,1,0,1]
 def mix(arr):
     result = []
     for i in range(len(arr)):
@@ -337,11 +254,11 @@ def selectSentences(arr,S):
         result.append(S[v])
     return result
 
-def compute_sim_opt(w1,w2):
-    f1 = funcSumExp(w1,w2)
-    f2 = funcSumExp2(w1,w2)
-    f3 = funcSumExp3(w1)
-    f4 = funcSumExp3(w2)
+def compute_sim_opt(s1,s2):
+    f1 = funcSumExp(s1,s2)
+    f2 = funcSumExp2(s1,s2)
+    f3 = funcSumExp3(s1)
+    f4 = funcSumExp3(s2)
     return round(1-((2*f1*f2)/((f4*f1)+(f3*f2))),3)
 
 def get_summary(random_s,sentences):
@@ -353,7 +270,7 @@ def get_summary(random_s,sentences):
     
 def listToString(s):
     # initialize an empty string 
-    str1 = " " 
+    str1 = " "  
     
     # return string   
     return (str1.join(str(x) for x in s)) 
@@ -386,7 +303,175 @@ def vectorize(text):
     print(word_tokens)
     print(result)
     return result
+
+"""
+def computeOptimalCentroid(tokens,centroids,exit):
+    # compute similarity between S1,S(random center)
+    similarities = computeSimilirity(tokens,centroids)
+    log.info("Similiraties:",similarities,"\n")
     
+    # clustering result
+    labels = findLabels(similarities)
+    log.info("Labels:",labels,"\n")
 
+    # toMatrix
+    matrix = labelInMatrix(labels)
+    #print("Matrix:",matrix,"\n")
+        
+    # get index
+    c = getIndexCentroid(centroids,matrix)
 
+    # calculate center
+    result = calculateCenter(tokens,matrix,c)
+    cash = []
+    for s in range(len(result)):
+        a = set(centroids[s]) & set(result[s])
+        if len(a)==0:
+            cash.append(True)
+        else:
+            cash.append(False)
+    if exit == 1:
+        return centroids,labels,matrix
+    log.info("EXIT CODE",exit)
+    if l in cash:
+        computeOptimalCentroid(tokens,centroids,exit-1)
+    else:
+        return result,labels,matrix,
+"""
+
+class k_means:
+    def __init__(self, k=3, max_iterations=52):
+        self.k = k
+        self.max_iterations = max_iterations
+    
+    # Select random center
+    def selectCenterOfCluster(self,text):
+        self.centroidsIndexs = []
+        
+        # Sentences...
+        sentences = sent_tokenize(text)
+
+        # Select random
+        a = random.sample(sentences,self.k)
             
+        for i in range(len(a)):
+            self.centroidsIndexs.append(sentences.index(a[i]))
+    
+    # convert centroid indexs to centroid value
+    def getCentroidValue(self, data):
+        self.centroids = []
+        for k,v in enumerate(self.centroidsIndexs):
+            self.centroids.append(data[v])
+
+    # compute similirity between centroid and sentences 
+    def computeSimilirity(self, data):
+        self.similarities = []
+        for i in range(len(data)):
+            cash = []
+            for k in range(len(self.centroids)):
+                cash.append(compute_sim_opt(data[i],self.centroids[k]))
+            self.similarities.append(cash)
+    
+    # classifies sentences 
+    def findLabels(self):
+        self.labels = []
+        for i in range(len(self.similarities)):
+            label = self.similarities[i].index(max(self.similarities[i]))
+            self.labels.append(label)
+
+    # convert labels to matrix
+    def labelInMatrix(self):
+        self.matrix = []
+        maxQ = max(self.labels)
+        for q in range(maxQ+1):
+            cash = [0] * (len(self.labels) - 1)
+            indexs = [i for i,x in enumerate(self.labels) if x==q]
+            for o in indexs:
+                cash.insert(o,1)
+            if len(cash)>len(self.labels):
+                a = cash[:-(len(cash)-len(self.labels))]
+                cash = a
+            self.matrix.append(cash)
+
+    # get Centroid indexs
+    def getIndexCentroid(self):
+        self.c = []
+        for q in range(len(self.centroids)):
+            cash = []
+            for i in range(len(self.matrix[q])):
+                if 1 == self.matrix[q][i]:
+                    cash.append(i)
+            self.c.append(cash)
+    
+    # calculate center
+    def calculateCenter(self, data):
+        self.centroids = []
+        for q in range(len(self.c)):
+            cash = []
+            for l in range(len(data[0])):
+                summ = funcSumCenter(data,self.c,l,q)
+                w = summ/self.matrix[q].count(1)
+                cash.append(round(w,3))
+            self.centroids.append(cash)
+    
+    # [0,1,0,1,0,1] ==> [[0,2,4],[1,3,5]]
+    def clusteringSentence(self):
+        self.cq = []
+        cluster = max(self.labels)
+        for q in range(cluster+1):
+            cash = []
+            for i, j in enumerate(self.labels):
+                if j == q:
+                    cash.append(i)
+            self.cq.append(cash)
+
+    # compute kMeans
+    def fit(self, data, text):
+        # select center
+        self.selectCenterOfCluster(text)
+        print("centroidsIndexs",self.centroidsIndexs)
+        
+        for i in range(self.max_iterations):
+            print("This is i",i)
+            print("\n")
+            
+            # covert centroid index to centroid value
+            self.getCentroidValue(data)
+
+            # compute similarity between S1,S(random center)
+            self.computeSimilirity(data)
+            
+            # clustering result
+            self.findLabels()
+            previous = self.labels
+
+            # toMatrix
+            self.labelInMatrix()
+                
+            # get index
+            self.getIndexCentroid()
+
+            # average the cluster datapoints to re-calculate the centroids
+            self.calculateCenter(data)
+            
+            # convert labels to Cq 
+            self.clusteringSentence()
+            isOptimal = False
+            """
+            for s in range(len(self.centroids)):
+                a = set(previous[s]) & set(np.array(self.centroids[s]))
+                print(a)
+                if len(a)==0:
+                    cash.append(True)
+                else:
+                    cash.append(False)
+            """
+            #print("this is previous",previous[0])
+            #print("this is new",self.centroidsIndexs[0])
+            comparison = np.array(previous) == np.array(self.labels)
+            equal_arrays = comparison.all()
+            if equal_arrays == True:
+                isOptimal = True
+
+            if isOptimal == True:
+                break
