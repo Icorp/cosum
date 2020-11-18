@@ -1,8 +1,12 @@
 import math
 import numpy as np
+from nltk.stem.snowball import SnowballStemmer
+stemmer = SnowballStemmer("english")
+import re
+import sys
 import random
 import logging as log
-import sys
+import time
 from nltk import sent_tokenize
 from nltk import word_tokenize
 from time import perf_counter
@@ -23,113 +27,122 @@ from formulation import funcSumExp2
 from formulation import funcSumExp3
 from formulation import funcSumCenter
 
+# Test
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.feature_extraction.text import TfidfTransformer
+from sklearn.feature_extraction.text import CountVectorizer
+from nltk.corpus import stopwords
 
-# Find sentence
 
+class CosumTfidfVectorizer:
+    def unionTokens(self):
+        self.vocabulary = sorted(set(self.vocabulary), key=self.vocabulary.index)    
+    
+    def Stemm(self):
+        filtered_tokens = []
+        # filter out any tokens not containing letters (e.g., numeric tokens, raw punctuation)
+        for token in self.tokens:
+            if re.search('[a-zA-Z]', token):
+                filtered_tokens.append(token)
+        self.notUnionTokens = [stemmer.stem(t) for t in filtered_tokens]
 
-#This method finds the average sentence length. 
-#Input: string and array sentences.Example:"text" , "["s1","s2"...,"sn"]" 
-#Returns: int
-def computeAverageSentenceLength(text,sentences):
-    return len(tokenizeAndRemoveStopWord(text))/len(sentences)
-                
-#This method calculates the weight of one word in the proposed sentence.
-#Input: string,string,string.Example:"s1. s2. s3. ..." ,"word","document"  
-#Returns: [float]
-def computeWeightOfSentence(sentence,sentences,text):
-    result = []
-    words = final_token(sentence)
-    for i in range(len(words)):
-        TF = findNumWordInSentence(sentence,words[i].lower())
-        Li = len(tokenizeAndRemoveStopWord(sentence))
-        Lavg = computeAverageSentenceLength(text,sentences)
-        Isf = computeIDF(words[i].lower(),sentence,sentences)
-        result.append(round(((TF)/(TF+0.5+(1.5*(Li/Lavg))))*Isf,3))
-    return result
-
-def computeAllWeightOfDocument(document):
-    sentences = sent_tokenize(document)
-    result = []
-    for i in range(len(sentences)):
-        result.append(computeWeightOfSentence(sentences[i],sentences,document))
-    return result
-
-def computeFullWeight(text):
-    sent_tokens = sent_tokenize(text)
-    word_tokens = final_token(text)
-    result = []
-    for i in range(len(sent_tokens)):
-        cash = []
-        for m in range(len(word_tokens)):
-            cash.append(computeTDIDF(word_tokens[m],sent_tokens[i],sent_tokens,text))
-        result.append(cash)
-    return result
+        # delete duplicate words
+        self.vocabulary = sorted(set(self.notUnionTokens), key=self.notUnionTokens.index)
         
+    
+    def computeTF(self, word, i):
+        indices = [i for i, x in enumerate(self.sentencesInWords[i]) if x == word]
+        self.TF = len(indices)        
+    
+            
+    def findNumSentencesSearchingWord(self, word):
+        self.nj = 0
+        for i in range(len(self.sentencesInWords)):
+            if word in self.sentencesInWords[i]:
+                self.nj += 1
 
-def computeTDIDF(word,sentence,sent_tokens,text):
-    TF = findNumWordInSentence(sentence,word.lower())
-    idf = computeIDF(word,sentence,sent_tokens)
-    l_avg = computeAverageSentenceLength(text,sent_tokens)
-    l_i = len(tokenizeAndRemoveStopWord(sentence))
-    return round(((TF)/(TF+0.5+(1.5*(l_i/l_avg))))*idf,3)
+    # Считает количество слов в предложении. На хвод принимает предложение, удаляет стоп слова. Sentence = "word word word"
+    # Example:
+    #   compute(self," I will be better tommorrow")
+    #   Output: 2
 
-def findWeightOfWord(sentence,word,text):
-    TF = findNumWordInSentence(sentence,word.lower())
-    return round(((TF)/(TF+0.5+(1.5*(len(tokenizeAndRemoveStopWord(sentence))/computeAverageSentenceLength(text,sent_tokenize(text))))))*computeIDF(word.lower(),sentence,sent_tokenize(text)),3)
-
-def findWeightOfWordOpt(sentence,word,Lavg,tokens,sentences):
-    TF = findNumWordInSentence(sentence,word.lower())
-    IDF = computeIDF(word.lower(),sentence,sentences)
-    return round((TF/(TF+0.5+(1.5*(len(tokens)/Lavg))))*IDF,3)
-
-def computeIDF(word,sentence,sentences):
-    if findNumSentencesSearchingWord(sentences,word.lower()) == 0:
-        log.error("Данного слова в этом документ нет, введите словo из документа.")
-        return 0
-    else:
-        return math.log10(len(sentences)/findNumSentencesSearchingWord(sentences,word.lower()))
-
-
+    def computeLi(self, i):
+        self.l_i = len(self.sentencesInWords[i])
+    
     
 
-def computeSimRRN(s1,s2,document,sentencesIndex):
-    sentences = sent_tokenize(document)
-    w1 = computeWeightOfSentence(s1,sentences,document)
-    w2 = computeWeightOfSentence(s2,sentences,document)
-    f1 = funcSum(w1,w2)
-    f2 = funcSum2(w1,w2)
-    f3 = funcSum3(w1)
-    f4 = funcSum3(w2)
-    log.info("S"+str(sentencesIndex[0])," == ","S"+str(sentencesIndex[1]),"OK","time:"+str(perf_counter()))
-    return round(1-((2*(f1)*f2)/((f3*f1)+(f4*f2))),3)
+    def computeISF(self, word):
+        if self.nj == 0:
+            log.error("Данного слова в этом документ нет, введите словo из документа.")
+            sys.exit()
+        else:
+            self.isf =  math.log10(len(self.sentences)/self.nj)
 
-def computeAllSimRRN(document):
-    log.info("Start compute weight ...")
-    w = computeAllWeightOfDocument(document)
-    log.info("finish = 100%")
+    # Cреднее количество слов в каждом предложении.
+    def computeAverageSentenceLength(self):
+        self.l_avg = len(self.vocabulary)/len(self.sentences)
+
+    # Данный метод находит вес одного слова.
+    def computeTDIDF(self,word,i):
+        self.computeLi(i)
+        self.computeTF(word, i)
+        self.findNumSentencesSearchingWord(word)
+        self.computeISF(word)
+        #print("TF\t i = ", i, "\t w = ", word, self.TF)
+        #print("IDF\t w = ", word, self.nj)
+        #print("L_I",self.l_i)
+        #print("L_avg",self.l_avg)
+        #print("L_i / L_avg = ",self.l_i/self.l_avg)
+        #print()
+        self.weight = round((self.TF/(self.TF+0.5+(1.5*(self.l_i/self.l_avg))))*self.isf,3)
     
-    sentences = sent_tokenize(document)
-    result = []
-    for i,x in enumerate(sentences):
-        for k,y in enumerate(sentences):
-            log.info("S"+str(i)," == ","S"+str(k),"OK","time:"+str(perf_counter()))
-            result.append(compute_sim_opt(w[i],w[k]))
-    return result
+    def convertSentenceToWords(self):
+        for i in range(len(self.sentences)):
+            word_tokens = word_tokenize(self.sentences[i])
+            stop_words = set(stopwords.words('english'))
+            self.cash_sentence_words = [w for w in word_tokens if not w in stop_words]
+            self.sentencesInWords.append(self.cash_sentence_words)
+            # Частота появленяи слова в предложении.
 
-def computeMatrixSimRRN(document):
-    log.info("Start compute weight ...")
-    w = computeFullWeight(document)
-    log.info("finish = 100%")
-    
-    sentences = sent_tokenize(document)
-    result = []
-    for i,x in enumerate(sentences):
-        cash = []
-        for k,y in enumerate(sentences):
-            cash.append(compute_sim_opt(w[i],w[k]))
-        result.append(cash)
-    return result
+    # Метод считает вес всех слов.
+    def computeFullWeight(self):
+        self.weight_matrix = []
+        self.sentencesInWords = []
+        self.convertSentenceToWords()
+        self.computeAverageSentenceLength()
+        for i in range(len(self.sentences)):
+            cash = []
+            for m in range(len(self.vocabulary)):
+                self.computeTDIDF(self.vocabulary[m],i)
+                cash.append(self.weight)
+            #print("Time:",round(time.perf_counter(),3)," sec")
+            self.weight_matrix.append(cash)
 
+
+    def fit(self,document):
+        stop_words = set(stopwords.words('english'))
+        self.document = document
+
+        # 0 step: get sentences
+        self.sentences = sent_tokenize(document)
+
+        # 1 step: get words
+        self.vocabulary = []
+        for i in range(len(self.sentences)):
+            word_tokens = word_tokenize(self.sentences[i])
+            tokens = [w for w in word_tokens if not w in stop_words]
+            for j in range(len(tokens)):
+                self.vocabulary.append(tokens[j])
+        
+        # 2 step: delete duplicate words
+        self.unionTokens()
+        
+        # 3 step: Stemming
+        #self.Stemm()
+
+        # 3 step: calculate weight
+        self.computeFullWeight()
+        
 
 def findK(text):
     n = len(sent_tokenize(text))
@@ -138,33 +151,6 @@ def findK(text):
     k=n*(num_of_terms/num_of_words)
     return round(k,0)
 
-
-def computeClustering(S,q):
-    sentences = S
-    centroid = [] 
-    result = []
-    for k in range(q):
-        index = random.randint(0, len(sentences))
-        centroid.append(index)
-        sentences[k] = 0
-    for i in range(len(sentences)):
-        cash = []
-        for k in range(q):
-            if sentences[i] == 0:
-                cash.append(0)
-            else:
-                log.info("Start clustering...")
-                log.info("Centroid => ",centroid)
-                log.info("Loop #",k)
-                log.info("Sentence",sentences[i])
-                log.info("Sentence",sentences[centroid[k]])
-                cash.append(computeSimClustering(sentences[i],sentences[centroid[k]]))
-                    
-                index = cash.index(max(cash))
-                log.info("cash:",cash)
-                result.append(index)        
-        log.info("Centroids:",centroid)    
-    return result
 
 def computeSimClustering(S1,S2):
     f1 = funcSum(S1,S2)
@@ -304,41 +290,6 @@ def vectorize(text):
     print(result)
     return result
 
-"""
-def computeOptimalCentroid(tokens,centroids,exit):
-    # compute similarity between S1,S(random center)
-    similarities = computeSimilirity(tokens,centroids)
-    log.info("Similiraties:",similarities,"\n")
-    
-    # clustering result
-    labels = findLabels(similarities)
-    log.info("Labels:",labels,"\n")
-
-    # toMatrix
-    matrix = labelInMatrix(labels)
-    #print("Matrix:",matrix,"\n")
-        
-    # get index
-    c = getIndexCentroid(centroids,matrix)
-
-    # calculate center
-    result = calculateCenter(tokens,matrix,c)
-    cash = []
-    for s in range(len(result)):
-        a = set(centroids[s]) & set(result[s])
-        if len(a)==0:
-            cash.append(True)
-        else:
-            cash.append(False)
-    if exit == 1:
-        return centroids,labels,matrix
-    log.info("EXIT CODE",exit)
-    if l in cash:
-        computeOptimalCentroid(tokens,centroids,exit-1)
-    else:
-        return result,labels,matrix,
-"""
-
 class k_means:
     def __init__(self, k=3, max_iterations=52):
         self.k = k
@@ -346,7 +297,7 @@ class k_means:
     
     # Select random center
     def selectCenterOfCluster(self,text):
-        self.centroidsIndexs = []
+        
         
         # Sentences...
         sentences = sent_tokenize(text)
@@ -359,13 +310,11 @@ class k_means:
     
     # convert centroid indexs to centroid value
     def getCentroidValue(self, data):
-        self.centroids = []
         for k,v in enumerate(self.centroidsIndexs):
             self.centroids.append(data[v])
 
     # compute similirity between centroid and sentences 
     def computeSimilirity(self, data):
-        self.similarities = []
         for i in range(len(data)):
             cash = []
             for k in range(len(self.centroids)):
@@ -374,14 +323,12 @@ class k_means:
     
     # classifies sentences 
     def findLabels(self):
-        self.labels = []
         for i in range(len(self.similarities)):
             label = self.similarities[i].index(max(self.similarities[i]))
             self.labels.append(label)
 
     # convert labels to matrix
     def labelInMatrix(self):
-        self.matrix = []
         maxQ = max(self.labels)
         for q in range(maxQ+1):
             cash = [0] * (len(self.labels) - 1)
@@ -405,12 +352,11 @@ class k_means:
     
     # calculate center
     def calculateCenter(self, data):
-        self.centroids = []
         for q in range(len(self.c)):
             cash = []
             for l in range(len(data[0])):
                 summ = funcSumCenter(data,self.c,l,q)
-                w = summ/self.matrix[q].count(1)
+                w = round(summ/self.matrix[q].count(1),3)
                 cash.append(round(w,3))
             self.centroids.append(cash)
     
@@ -427,24 +373,32 @@ class k_means:
 
     # compute kMeans
     def fit(self, data, text):
+        self.centroidsIndexs = []
+        self.centroids = []     # веса центроидов
+        
         # select center
         self.selectCenterOfCluster(text)
+        
+        # covert centroid index to centroid value
+        self.getCentroidValue(data)
         print("centroidsIndexs",self.centroidsIndexs)
         
         for i in range(self.max_iterations):
-            print("This is i",i)
-            print("\n")
+            self.matrix = []        # Это Cq где  q - номер кластера, С - сам кластер
+            self.labels = []        # Номера кластеров где индекс массива номер предложения
+            self.similarities = []  # Массив похожостей предложения с центроидом
+            previous_centroid = self.centroids
+            print("Previus center",previous_centroid)
             
-            # covert centroid index to centroid value
-            self.getCentroidValue(data)
 
             # compute similarity between S1,S(random center)
             self.computeSimilirity(data)
             
             # clustering result
             self.findLabels()
-            previous = self.labels
-
+            previous_labels = self.labels
+            print(previous_labels)
+            
             # toMatrix
             self.labelInMatrix()
                 
@@ -453,24 +407,16 @@ class k_means:
 
             # average the cluster datapoints to re-calculate the centroids
             self.calculateCenter(data)
-            
+            print("\n\n\n\n",self.centroids)
             # convert labels to Cq 
-            self.clusteringSentence()
+            #self.clusteringSentence()
+
             isOptimal = False
-            """
-            for s in range(len(self.centroids)):
-                a = set(previous[s]) & set(np.array(self.centroids[s]))
-                print(a)
-                if len(a)==0:
-                    cash.append(True)
-                else:
-                    cash.append(False)
-            """
-            #print("this is previous",previous[0])
-            #print("this is new",self.centroidsIndexs[0])
-            comparison = np.array(previous) == np.array(self.labels)
+            
+            comparison = np.array(previous_centroid) == np.array(self.centroids)
             equal_arrays = comparison.all()
             if equal_arrays == True:
+                print("TRUE")
                 isOptimal = True
 
             if isOptimal == True:

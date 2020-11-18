@@ -1,5 +1,5 @@
-Fx = 4.194	Indexs = [48] [49] [39]	Rouge = 0.115
-Fx = 4.172	Indexs = [43] [39] [31]	Rouge = 0.087
-Fx = 4.23	Indexs = [46] [3] [34]	Rouge = 0.135
-Fx = 4.492	Indexs = [49] [23] [28]	Rouge = 0.087
-Fx = 4.314	Indexs = [39] [27] [5]	Rouge = 0.029
+Fx = 2.966	Indexs = [42] [40] [50]	Rouge = 0.106
+Fx = 3.232	Indexs = [27] [31] [7]	Rouge = 0.087
+Fx = 3.05	Indexs = [9] [3] [36]	Rouge = 0.125
+Fx = 2.918	Indexs = [48] [40] [6]	Rouge = 0.144
+Fx = 3.084	Indexs = [34] [45] [3]	Rouge = 0.144

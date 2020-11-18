@@ -1,13 +1,6 @@
-import sys
-import cosum
 import logging as log
 import random
 from cosum import computeSimClustering
-from cosum import computeAllWeightOfDocument
-from cosum import labelInMatrix
-from cosum import selectSentences
-from cosum import computeMatrixSimRRN
-from cosum import mix
 from formulation import funcSum4
 from nltk.tokenize import sent_tokenize
 from nltk.tokenize import word_tokenize

@@ -1,5 +1,6 @@
 import itertools
 import cosum
+import sys
 
 def funcSum(w1,w2):
     seqSum=0.0

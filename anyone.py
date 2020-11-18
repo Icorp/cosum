@@ -5,6 +5,11 @@ import time
 import findIt
 import rouge
 import re
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.feature_extraction.text import TfidfTransformer
+from sklearn.feature_extraction.text import CountVectorizer
+from nltk.corpus import stopwords 
+from sklearn.pipeline import Pipeline
 from nltk.tokenize import sent_tokenize
 from nltk.tokenize import word_tokenize
 from nltk.util import ngrams
@@ -17,37 +22,48 @@ from rouge import Rouge
 import matplotlib.pyplot as plt
 import sys
 from cosum import k_means
+from cosum import CosumTfidfVectorizer
 from optimize import objective
 
-start_time = time.time()
 print("Start ...")
 print("Reading document ...")
 text = readText("training/AP880310-0257")
 sentences = sent_tokenize(text)
 K = int(cosum.findK(text))
-print(K)
+
+
+
+
+
+vectorizer = CosumTfidfVectorizer()
+vectorizer.fit(text)
+vector = vectorizer.weight_matrix
 
 #vector = cosum.computeFullWeight(text)
-#writeToFile(vector)
-
+writeToFile(vector)
 # Reading data of weight from file
-vector = np.array(readFile())
+#vector = np.array(readFile())
 
 # Computing centroids
 print("Computing centroids ...")
-
-kmeans = k_means(3)
+kmeans = k_means(3,max_iterations=100000)
 kmeans.fit(vector, text)
-print("matrix",kmeans.matrix)
 
-# 
+# X = [1,2,4,1,2,3,5,7,2]  This is number of cluster 
 X = kmeans.labels
+
+# O = [[centroid value],[centroid value],[centroid value]] this it centroids of cluster
 O = kmeans.centroids
-matrix = kmeans.matrix
+
+# U = U_iq    i - is index of sentences, q - is index of cluster
+# U = [[1,0,0,0,1], [0,1,1,1,0], [...] ]
+U = kmeans.matrix
+
+sys.exit()
 Cq = kmeans.cq
 print("clustering",Cq)
 objectives = objective()
-objectives.start(vector, Cq, X, text, O, matrix)
+objectives.start(vector, Cq, X, text, O, U)
 print(objectives.F)
 hypothesis = objectives.summary
 fx = objectives.F
