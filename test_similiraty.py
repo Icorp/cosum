@@ -1,7 +1,8 @@
 import csv
 from cosum import CosumTfidfVectorizer
 import csv
-import sys 
+import sys
+
 
 def funcSum(Wi,Wj):
     seqSum=0.0
@@ -42,9 +43,18 @@ vector = vectorizer.weight_matrix
 sentences = vectorizer.sentences
 words = vectorizer.vocabulary
 newwords = vectorizer.new_vocabulary
-checksentence = 0
+checksentence = 2
 cash = []
 similarity = []
+var1 = computeSimClustering(vector[2],vector[2])
+var2 = computeSimClustering(vector[30],vector[2])
+var3 = computeSimClustering(vector[21],vector[2])
+
+
+print(var1)
+print(var2)
+print(var3)
+sys.exit()
 for i in range(len(vector)):
     some = computeSimClustering(vector[checksentence],vector[i])
     similarity.append(some)

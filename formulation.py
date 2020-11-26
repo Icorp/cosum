@@ -2,25 +2,28 @@ import itertools
 import cosum
 import sys
 
-def funcSum(w1,w2):
+def funcSum(Wi,Wj):
     seqSum=0.0
-    for d,f in itertools.zip_longest(w1,w2,fillvalue=0):
-        cash=(d-d*f)
+    m = len(Wi)
+    for k in range(m):
+        cash=Wi[k]-(Wi[k]*Wj[k])
         seqSum+=cash
-    return round(seqSum,3)    
+    return seqSum    
 
-def funcSum2(w1,w2):
+def funcSum2(Wi,Wj):
     seqSum=0.0
-    for d,f in itertools.zip_longest(w1,w2,fillvalue=0):
-        cash=(f-d*f)
+    m = len(Wi)
+    for k in range(m):
+        cash = Wj[k]-Wi[k]*Wj[k]
         seqSum+=cash
-    return round(seqSum,3)
+    return seqSum
 
-def funcSum3(w):
+def funcSum3(W):
     seqSum=0.0
-    for i in range(len(w)):
-        seqSum+=w[i]
-    return round(seqSum,3)
+    m = len(W)
+    for k in range(m):
+        seqSum+=W[k]
+    return seqSum
 
 def funcSum4(nq,S,q,X):
     summ = 0
@@ -60,7 +63,7 @@ def funcSumCenter(tokens,c,l,q):
         else:
             uiq = 0
         seqSum += tokens[i][l]*uiq
-    return round(seqSum,3)
+    return seqSum
 
 
 # for numpy

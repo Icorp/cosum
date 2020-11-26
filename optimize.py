@@ -108,9 +108,8 @@ class objective:
         while True:
             self.randomizer_cluster()
             self.get_summary()
-            print(self.summary_index)
             self.summary = ''.join(self.summary_index)
-            print("Были выбраны предложения с индексами : ",self.random_sentences)
+            #print("Были выбраны предложения с индексами : ",self.random_sentences)
             self.stageOne()
             print("Результат(I) :",self.stage_one_result,"\n")
             if all(self.stage_one_result) == True:
