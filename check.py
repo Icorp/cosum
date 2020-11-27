@@ -21,7 +21,7 @@ for i in range(len(my_data)):
     newData.append(cash)
 
 kmeans = k_means(3,max_iterations=100000)
-kmeans.fit(newData,metric="euclidean")
+kmeans.fit(newData,metric="similarity")
 centroid = kmeans.centroids
 y_means = np.array(kmeans.y_means)
 

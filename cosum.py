@@ -416,24 +416,34 @@ class k_means:
 
     # compute kMeans
     def fit(self, data, metric):
-        self.starter = 0
+        # If NullCluster is true. All clusters have some elements, else NullCluster is False on of cluster doesnt have value.
+        self.NullCluster = False
         self.metric = metric
         self.data = data
+        while self.NullCluster != True:
+            # select center from centences
+            self.selectCenterOfCluster()
+            
+            # covert centroid index to centroid value
+            self.getCentroidValue()
+            print("Центроиды:",self.centroidsIndexs)
+            
+            # Computing similirity between sentences
+            self.computeSimilarityBetweenSentences()
+            
+            # find labels X = [x1,x2,x3,...,xn]
+            self.findLabels()
 
-        # select center from centences
-        self.selectCenterOfCluster()
+            isNull = []
+            for i in range(self.k):
+                if i in self.labels:
+                    isNull.append(True)
+                else:
+                    isNull.append(False)
+            print("IS NULL =",isNull ,"\n")
+            if all(isNull) == True:
+                self.NullCluster = True
         
-        # covert centroid index to centroid value
-        self.getCentroidValue()
-        print("centroidsIndexs",self.centroidsIndexs)
-        
-        # Computing similirity between sentences
-        self.computeSimilarityBetweenSentences()
-        
-        # find labels X = [x1,x2,x3,...,xn]
-        self.findLabels()
-        print(self.labels)
-        sys.exit()
         # toMatrix  Cq = [q1 -[1,0..,uiq], q2 -[], q3 -[]]
         # if s1 from q1 uiq = 1 else 0
         self.labelInMatrix()
@@ -469,4 +479,4 @@ class k_means:
             equal_arrays = comparison.all()
             if equal_arrays == True:
                 break
-        self.y_means = self.labels
+        self.y_means = np.array(self.labels)

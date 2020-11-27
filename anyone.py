@@ -51,6 +51,7 @@ print("Computing centroids ...")
 kmeans = k_means(3,max_iterations=100000)
 kmeans.fit(vector,metric="similarity")
 U = kmeans.similarities
+print(len(U))
 sys.exit()
 # X = [1,2,4,1,2,3,5,7,2]  This is number of cluster 
 X = kmeans.labels

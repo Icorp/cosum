@@ -1,8 +1,14 @@
+# -*- coding: utf-8 -*-
 import cosum
 import numpy as np
+import logging as log
+import time
 import findIt
 import rouge
 import re
+from sklearn.feature_extraction.text import CountVectorizer
+from nltk.corpus import stopwords 
+from sklearn.pipeline import Pipeline
 from nltk.tokenize import sent_tokenize
 from nltk.tokenize import word_tokenize
 from nltk.util import ngrams
@@ -11,50 +17,61 @@ from file import writeToFile
 from file import readFile
 from file import saveStats
 from file import readText
-from optimize import stageOne
-from optimize import stageTwo
-from optimize import stageThree
-from optimize import F
-from optimize import startTest
 from rouge import Rouge 
 import matplotlib.pyplot as plt
 import sys
+from cosum import k_means
+from cosum import CosumTfidfVectorizer
+from optimize import objective
 
-document = readText("training/AP880310-0257")
-Sentences = sent_tokenize(document)
-#S = cosum.computeAllWeightOfDocument(document)
-#print(a)
-#data = cosum.computeMatrixSimRRN(document)
-#writeToFile(data,"Sim")
-#data = np.array(readFile())
-#X = []
-#for i in range(len(Sentences)):
-#   X.append(cosum.computeWeightOfSentence(Sentences[i],Sentences,document))
-#data = cosum.toVector(X)
-#writeToFile(data)
-data = np.array(readFile())
-words = cosum.final_token(document)
+print("Start ...")
+print("Reading document ...")
+text = readText("training/AP880310-0257")
 
-kmeans = KMeans(n_clusters=3,random_state=42).fit(data)
+# sentences = sent_tokenize(text)
+K = int(cosum.findK(text))
 
-X = cosum.labelInMatrix(kmeans.labels_)
-O = kmeans.cluster_centers_
 
-#  S - is weight of all words in the document
-# S = [[w1,w2,...,wn],
-#      [w1,w2,...,wn]          
-#      ]
-#S = cosum.computeAllWeightOfDocument(document)
-arr = kmeans.labels_.tolist()
-clusters = cosum.clusteringSentence(arr)
-print(data)
-print("Cq = ",clusters,"\n")
-print("kmeans labels",kmeans.labels_)
-print("kmeans cluster centers",kmeans.cluster_centers_)
-print("arr",arr)
-print("clusters",clusters)
+
+
+
+vectorizer = CosumTfidfVectorizer()
+vectorizer.fit(text)
+vector = vectorizer.weight_matrix
+
+
+
+#vector = cosum.computeFullWeight(text)
+writeToFile(vector)
+# Reading data of weight from file
+#vector = np.array(readFile())
+
+# Computing centroids
+print("Computing centroids ...")
+kmeans = k_means(3,max_iterations=100000)
+kmeans.fit(vector,metric="similarity")
+U = kmeans.similarities
+print(len(U))
 sys.exit()
-hypothesis,fx,indexs,summary = startTest(clusters,document,X,O,clusters,Sentences)
+# X = [1,2,4,1,2,3,5,7,2]  This is number of cluster 
+X = kmeans.labels
+
+# O = [[centroid value],[centroid value],[centroid value]] this it centroids of cluster
+O = kmeans.centroids
+
+# U = U_iq    i - is index of sentences, q - is index of cluster
+# U = [[1,0,0,0,1], [0,1,1,1,0], [...] ]
+U = kmeans.matrix
+
+
+Cq = kmeans.c
+objectives = objective()
+objectives.start(vector, Cq, X, text, O, U)
+print(objectives.F)
+hypothesis = objectives.summary
+fx = objectives.F
+indexs = objectives.random_sentences
+summary = objectives.summary
 
 
 #print(X)
