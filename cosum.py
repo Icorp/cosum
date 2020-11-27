@@ -373,8 +373,7 @@ class k_means:
                 a = cash[:-(len(cash)-len(self.labels))]
                 cash = a
             self.matrix.append(cash)
-
-    # get Centroid indexs
+    
     def getIndexCentroid(self):
         self.c = []
         for q in range(len(self.centroids)):
@@ -417,6 +416,7 @@ class k_means:
 
     # compute kMeans
     def fit(self, data, metric):
+        self.starter = 0
         self.metric = metric
         self.data = data
 
@@ -432,7 +432,8 @@ class k_means:
         
         # find labels X = [x1,x2,x3,...,xn]
         self.findLabels()
-
+        print(self.labels)
+        sys.exit()
         # toMatrix  Cq = [q1 -[1,0..,uiq], q2 -[], q3 -[]]
         # if s1 from q1 uiq = 1 else 0
         self.labelInMatrix()
