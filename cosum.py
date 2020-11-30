@@ -301,7 +301,7 @@ def euclidian(X,Y):
     # printing Euclidean distance 
     return np.sqrt(sum_sq)
 
-class k_means:
+class K_means:
     def __init__(self, k=3, max_iterations=52, metric="similarity"):
         self.metric = metric
         self.k = k

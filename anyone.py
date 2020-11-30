@@ -6,6 +6,7 @@ import time
 import findIt
 import rouge
 import re
+from ga import Ga
 from sklearn.feature_extraction.text import CountVectorizer
 from nltk.corpus import stopwords 
 from sklearn.pipeline import Pipeline
@@ -20,9 +21,9 @@ from file import readText
 from rouge import Rouge 
 import matplotlib.pyplot as plt
 import sys
-from cosum import k_means
+from cosum import K_means
 from cosum import CosumTfidfVectorizer
-from optimize import objective
+from optimize import Objective
 
 print("Start ...")
 print("Reading document ...")
@@ -48,10 +49,12 @@ writeToFile(vector)
 
 # Computing centroids
 print("Computing centroids ...")
-kmeans = k_means(3,max_iterations=100000)
+kmeans = K_means(3,max_iterations=100000)
 kmeans.fit(vector,metric="similarity")
-U = kmeans.similarities
-print(len(U))
+
+genetic = Ga()
+genetic.fit(vector)
+
 sys.exit()
 # X = [1,2,4,1,2,3,5,7,2]  This is number of cluster 
 X = kmeans.labels

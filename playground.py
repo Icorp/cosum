@@ -1,4 +1,7 @@
-i = 1
-while i < 6:
-  print(i)
-  i += 1
+import random
+
+a = example(1,2)
+print(a)
+
+def example(a,b):
+  return a+b

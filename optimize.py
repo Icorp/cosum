@@ -1,12 +1,13 @@
 import logging as log
 import random
+from cosum import K_means
 from cosum import computeSimClustering
 from formulation import funcSum4
 from nltk.tokenize import sent_tokenize
 from nltk.tokenize import word_tokenize
 
 l_max = 100
-class objective:
+class Objective(K_means):
     def randomizer_cluster(self):
         self.random_sentences = []
         for i in range(len(self.Cq)):
@@ -52,6 +53,8 @@ class objective:
             for k in range(len(self.random_sentences[i])):
                 self.summary_index.append(self.sentences[self.random_sentences[i][k]])
     
+    def calculateObjFunction(self, data):
+        print("TODO:")
     # This stage check all statements. 
     # li*x[i][q] <= Lavg
     # li*x[i][q] <= Lmax
@@ -121,4 +124,3 @@ class objective:
                     print("Stage II: No")
             else:
                 print("Stage I: NO")
-
