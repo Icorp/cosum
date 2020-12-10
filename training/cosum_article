@@ -1,0 +1,399 @@
+
+<DOC>
+<DOCNO> AP880310-0257 </DOCNO>
+<FILEID>AP-NR-03-10-88 1335EST</FILEID>
+<FIRST>a w AM-PlasticGuns Adv14   03-10 1070</FIRST>
+<SECOND>AM-Plastic Guns, Adv 14,1099</SECOND>
+<NOTE>$adv14</NOTE>
+<NOTE>For Release Mon AMs, March 14 and Thereafter</NOTE>
+<HEAD>Both Sides Would Ban Them From Airports, But Still Can't Agree</HEAD>
+<BYLINE>By LARRY MARGASAK</BYLINE>
+<BYLINE>Associated Press Writer</BYLINE>
+<DATELINE>WASHINGTON (AP) </DATELINE>
+<TEXT>
+With the rapid growth of the Internet and information–communication technologies, large amount of text has been generated, aggregated, and
+stored in different locations, such as e‐government and e‐library. However, these valuable data have not been well organized, treated, and used.
+The explosion of electronic documents has made it difficult for users to extract useful information from them. The user due to the large amount of
+information does not read many relevant and interesting documents. Therefore, the continuing growth of available online text documents makes
+research and application of text summarization very important and consequently, in recent years, attracts the attention of many researchers. The
+Received: 9 August 2016 Revised: 22 March 2018 Accepted: 31 August 2018
+DOI: 10.1111/exsy.12340
+Expert Systems. 2019;36:e12340.
+https://doi.org/10.1111/exsy.12340
+wileyonlinelibrary.com/journal/exsy © 2018 John Wiley & Sons, Ltd 1 of 17
+reason for this is twofold: First, text summarization can help cope with the information overload, and second, small form‐factor devices are becoming increasingly popular.
+Text summarization is a process of automatically extracting salient information from a document or a set of documents and presenting that
+information to the user in a condensed version. It is an important way of finding relevant information in large text libraries or in the Internet
+(Canhasi & Kononenko, 2014; Ferreira et al., 2014). Text summarization can help users to access the information more easily, from one hand,
+reducing the time they have to spend dealing with the information and, on the other hand, selecting the information most useful for them (Abdi,
+Idris, Alguliev, & Aliguliyev, 2015; Abdi, Idris, Alguliyev, & Aliguliyev, 2016; Lloret & Palomar, 2013; Yang & Wang, 2008).
+According to different criteria, text summarization techniques can be categorized into abstract‐based and extract‐based (reproducing sentence
+or not), multi‐document and single‐document (depending on the number of documents processed), query‐focused and generic (taking account of the
+target audience), and supervised and unsupervised (with training set or not) methods. Abstraction can be described as reading and understanding the
+text to recognize its content that is then compiled in a concise text. In general, an abstract can be described as a summary comprising concepts/
+ideas taken from the source that are then reinterpreted and presented in a different form. Abstraction requires linguistic analysis tools to construct
+new sentences from those previously extracted. An extract is a summary consisting of units of text taken from the source and presented verbatim.
+Single‐document summarization can only distill one document into a shorter version, whereas on the contrary, multi‐document summarization can
+compress a set of documents. Multi‐document summarization can be seen as an enhancement of single‐document summarization and can be used
+for outlining the information contained in a cluster of documents (Canhasi & Kononenko, 2014; Luo, Zhuang, He, & Shi, 2013; Mendoza, Cobos, &
+León, 2015). Based on the target audience, summaries may be generic and query‐focused. Generic summarization tries to extract the most general
+idea from the original document without any specified preference in terms of content. Generic summaries do not depend on the audience for
+whom the summary is intended. Query‐focused document summarization is a special case of document summarization. Query‐focused summaries
+respond to a query made by the user. Given a query, the task is to produce a summary that can respond to the information required by the query
+(Abdi, Shamsuddin, & Aliguliyev, 2018; Canhasi & Kononenko, 2014; Mendoza et al., 2015). In supervised methods for summarization, the task of
+selecting important sentences is represented as a binary classification problem, partitioning all sentences in the input into summary and
+nonsummary sentences. Unsupervised learning methods do not require any training data and thus can be applied to any text data without requiring any manual effort. The two main unsupervised learning methods commonly used in the context of text data are clustering and topic modelling
+(Alguliev & Aliguliyev, 2008; Alguliev & Alyguliev, 2007; Aliguliyev, 2006; Aliguliyev, 2009a; Aliguliyev, 2010a; Aliguliyev, 2010b; Alyguliyev, 2009;
+Cai, Li, & Zhang, 2013; Cai, Li, & Zhang, 2014; Mei & Chen, 2012).
+In this paper, we propose an extractive document summarization model based on clustering and optimization. For detecting topics in a document, this model, first, utilizes k‐means algorithm to segment the sentences into topical groups. Second, to create an optimal summary, this
+approach presents an optimization model for selecting the salient sentences from each group. Later, to solve the optimization problem, a modified
+differential evolution (DE) algorithm is developed. Notice that this approach allows covering all topics in the document and avoiding redundancy in
+a summary.
+The rest of this paper is organized as follows. Section 2 introduces the overview of related work. In Section 3, mathematical formulation of
+sentence selection problem for text summarization is introduced. It first segregates the sentences into clusters by topics, and then, the sentence
+selection problem from each cluster is formulated as an optimization problem. Section 4 presents a modified DE algorithm for solving the optimization problem. The results of evaluation using Document Understanding Conference (DUC) data sets, along with a comparison and analysis with
+other state‐of‐the‐art methods, are presented in Section 5. Finally, we conclude our paper in Section 6.
+A large number of extractive text summarization methods are proposed over the years. Sentence scoring is the most critical step of all extractive
+text summarization methods, and researchers are putting much effort to improve the sentence scoring method to enhance the quality of the summary. In document summarization, one of the most difficult problems is to cover all topics in the text. There are many methods to summarize documents by finding topics of the document first and scoring the individual sentences with respect to the topics. Sentence clustering has been
+successfully applied in document summarization to discover the topics conveyed in a document. However, existing clustering‐based summarization approaches are seldom targeted for both diversity and coverage of summaries, which are believed to be the two key issues to determine the
+quality of summaries (Cai & Li, 2011). The focus of the work (Cai et al., 2014) is to explore a systematic approach that allows diversity and coverage to be tackled within an integrated clustering‐based summarization framework. Cai et al. (2013) developed two coclustering frameworks,
+namely, integrated clustering and interactive clustering, to cluster sentences and words simultaneously. Coclustering frameworks are proposed
+to allow words to play an explicit role in sentence clustering as an independent text object and to allow simultaneous sentence and word clustering. A fuzzy medoid‐based clustering approach for query‐oriented multi‐document summarization, presented in Mei and Chen (2012), is successfully employed to generate subsets of sentences where each of them corresponds to a subtopic of the related topic. For detecting relevant
+information and avoiding redundant information in the summaries, Lloret and Palomar (2013) presented a text summarization tool, called compendium. It combines the statistical and cognitive‐based techniques for detecting relevant information and for avoiding redundant information it uses
+for textual entailment. Luo et al. (2013) proposed a probabilistic framework to model topic relevance and coverage. In Ferreira et al. (2014), for
+2 of 17 ALGULIYEV ET AL.
+avoiding information redundancy and providing diversity in a summary, a new sentence clustering algorithm based on a graph model is proposed.
+Graph‐based approaches, such as Erkan and Radev (2004), Wan, Yang, and Xiao (2007a), and Balaji, Geetha, and Parthasarathi (2014), first build a
+graphical representation of a document and then apply different methods to rank the nodes (sentences). For example, the LexRank algorithm ranks
+the graph nodes in terms of their centrality, that is, the most connected nodes are ranked highest. CollabSum (Wan, Yang, & Xiao, 2007b) first
+employs the clustering algorithm to obtain appropriate document clusters and then utilizes the graph‐based ranking algorithm for collaborative
+document summarization within each cluster. Both the cross‐document and the within‐document relationships between sentences are incorporated in the algorithm. The within‐document relationships reflect the local information existing in the document, and the cross‐document relationships reflect the global information in the cluster context. Song, Choi, Park, and Ding (2011) proposed a fuzzy evolutionary optimization model
+(FEOM) to simultaneously carry out document clustering and generate summaries. FEOM uses genetic algorithms to generate a random population as the initial set of clustering solutions. FEOM is then applied to sentence clustering that selects the most important sentence from each cluster to obtain the summary. To cover all topics, Alguliev, Aliguliyev, and Isazade (2012) modelled document summarization as a modified p‐median
+problem.
+The paper of Abdi et al. (2018) proposes a query‐based multi‐documents opinion‐oriented summarization method for extraction and summarization of the opinionated sentences related to the user's query. The proposed method consists of two stages: sentiment analysis and summarizer.
+Unlike traditional summarization methods, sentiment summarization methods rely on two main factors: sentiment degree and relevant information
+selection.
+In Mendoza, Bonilla, Noguera, Cobos, and León (2014), for the extractive single‐document summarization, a memetic algorithm (MA‐
+SingleDocSum) is proposed. This work addresses the generation of extractive summaries from a single document as a binary optimization problem.
+For simultaneous single‐document and multi‐document summarizations, the method UnifiedRank (Wan, 2010) uses the mutual influences
+between the two tasks. The mutual influences between the two tasks are incorporated into a graph model. In the paper, the ranking scores of
+sentences for single‐document summarization and the ranking scores of sentences for multi‐document summarization can be obtained simultaneously in a unified graph‐based ranking process. A novel document summarization method based on neural networks, called NetSum
+(Svore, Vanderwende, & Burges, 2007), uses both neural networks and the RankNet learning algorithm to score every sentence and identify
+the most salient sentences. Shen, Sun, Li, Yang, and Chen (2007) use conditional random fields (CRFs) to model the summarization task as a classification problem. In this view, each document is a sequence of sentences, and the summarization procedure labels the sentences using 1 and 0. In
+Wan et al. (2007a), the summary is produced by choosing the sentences with both high biased information richness and high information novelty.
+This method consists of three steps. In the first step, for each sentence, it calculates the manifold‐ranking score. This score reflects the biased
+information richness of a sentence. In the second step, using the manifold‐ranking scores, it imposes the diversity penalty on each sentence. A
+greedy algorithm is used to impose the diversity penalty. The overall ranking score of each sentence is obtained to reflect both the biased information richness and the information novelty of the sentence. Finally, the sentences with high overall ranking scores are chosen for the summary.
+Unsupervised and supervised classification approaches have been widely applied in many areas of industry. Among the supervised classification methods, support vector machine (SVM) has been successfully applied to a lot of classification problems due to its good generalization performance. The paper of Gu, Sheng, and Li (2015) first proposes a biparameter space partition algorithm; second, based on the biparameter space
+partition, it proposes a k‐fold crossvalidation algorithm to compute the global optimum parameter pairs of cost sensitive SVM. Experimental results
+show that the method has better generalization ability than various kinds of grid search methods, however, with less running time. Gu et al. (2015)
+proposed an incremental ν‐SVR learning algorithm. This algorithm adjusts the weights of ν‐SVC based on the Karush–Kuhn–Tucker conditions to
+prepare an initial solution for the incremental learning. Xia, Wang, Sun, Liu, and Xiong (2016) presented a steganalysis method to attack least significant bit matching by using the differences between nonadjacent pixels. In the paper, steganalysis is considered as a problem of two‐class classification, that is, classifying the test image into either the original image class or stego image class. This method extracts features from the
+differences between nonadjacent pixels, which uses to train SVM classifiers. Gu and Sheng (2016) first present a new equivalent dual formulation
+for ν‐support vector classification and, then, propose a ν‐SvcRPath, based on lower upper decomposition with partial pivoting. Theoretical analysis
+and experimental results verify that ν‐SvcRPath can avoid the exception completely, handle singularities in the key matrix. In conventional
+machine learning and data mining research, predictive learning has become a standard inductive learning, where different subproblem formulations
+have been identified, for example, classification, metric regression, and ordinal regression. In Gu, Sheng, Tay, Romano, and Li (2015), authors presented an effective incremental support vector ordinal regression formulation based on a sum‐of‐margins strategy, whose problem size is linear in
+the training data size. The incremental support vector ordinal regression can handle a quadratic formulation with multiple constraints of the mixture of an equality and an inequality for multiple binary classification problems.
+SVM‐based approach, proposed in Yeh et al. (2005), uses two methods—modified corpus‐based approach and the LSA‐based text relationship
+map. The first is based on a score function, and a genetic algorithm is employed to discover suitable combinations of feature weights. The second
+exploits LSA and text relationship map to extract semantically salient structures from a document. The method query, cluster, summarize
+(QCS; Dunlavy et al., 2007) produces the summaries by using hidden Markov model. It computes the probability that each sentence is a good summary sentence and then chooses sentences for the summary with the highest probability. To tackle time‐consuming weakness of AdaBoost for
+vehicle classification, a rapid learning algorithm is proposed in Wen, Shao, Xue, and Fang (2015). This approach first designs a Haar‐like feature
+extraction method to represent a vehicle's edges and structures and then proposes a rapid feature selection algorithm by using AdaBoost due
+to the large pool of Haar‐like features. Against least significant bit matching steganography, a learning‐based steganalysis method is proposed
+ALGULIYEV ET AL. 3 of 17 in Xia, Wang, Sun, and Wang (2014). The work of Wu, Zheng, and Olson (2014) developed a novel decision‐support system using sentiment analysis, SVM, and generalized autoregressive conditional heteroscedasticity modelling to conduct context‐sensitive sentiment analysis of online opinion posts in stock markets. Experimental results showed that the statistical machine learning approach outperforms the semantic approach in
+classification accuracy.Among the unsupervised classification methods, k‐means and fuzzy c‐means (FCM) have been successfully applied to a lot of clustering problems due to their good generalization performance. FCM has been considered as an effective algorithm for clustering. However, it still suffers from
+two problems: one is insufficient robustness to noise, and the other is the Euclidean distance in FCM, which is sensitive to outliers. To solve these
+two problems, Zheng, Jeon, Xu, Wu, and Zhang (2015) proposed two new algorithms, generalized FCM and hierarchical FCM (HFCM). Then they
+combined two algorithms, generalized FCM and HFCM, and introduced generalized HFCM.
+The structural information of data is an effective way to represent prior knowledge and has been found to be vital for designing classifiers in
+real‐world problems. Minimax probability machine (MPM) is an interesting discriminative classifier based on generative prior knowledge. It can
+directly estimate the probabilistic accuracy bound by minimizing the maximum probability of misclassification. However, MPM only considers
+the prior probability distribution of each class with a given mean and covariance matrix, which does not efficiently exploit the structural information of data. In the paper of Gu, Sun, and Sheng (2017), an improved version of MPM that can incorporate the structural information of data, called
+structural MPM, is proposed. In particular, authors of the paper first use two finite mixture models to capture the structural information of both
+classes.Optimization approaches have been widely applied in many areas of industry (Wu, Chen, & Olson, 2014). As many practical optimization problems are becoming increasingly complex, some better optimization algorithms are needed. To solve global optimization problems, recently, algorithms based on evolutionary (e.g., genetic algorithm and DE) and swarm principles (e.g., artificial bee colony, ant colony optimization [ACO],
+and particle swarm optimization [PSO]) have been widely studied. For example, Xue, Jiang, Zhao, and Ma (2018) proposed a self‐adaptive artificial
+bee colony algorithm based on the global best candidate for global optimization. For validation of the feasibility of the proposed algorithm in real‐
+world application, authors demonstrated its application to a real clustering problem based on k‐means method. For solving complex optimization
+problems, Deng, Zhao, Zou, et al. (2017) proposed the hybrid genetic algorithm and ACO algorithm with multipopulation collaborative strategy and
+adaptive control parameters. In this algorithm, the adaptive control parameters are introduced to make relatively uniform pheromone distribution
+and effectively solve the contradiction between expanding search and finding optimal solution. For solving multiobjective optimization model of
+gate assignment problem, Deng, Zhao, Yang, et al. (2017) proposed an improved adaptive PSO algorithm. To escape from the local minima in a
+certain probability and improve the global search, the algorithm uses the advantages of alpha‐stable distribution and dynamic fractional calculus.
+In order to make full use of the different strategies and the multipopulation evolution, Deng et al. (2015) proposed a chaotic ACO with the adaptive multistrategy fusion algorithm.
+An optimization approach to text summarization also has been widely investigated in literature. For example, in Alguliev, Aliguliyev, and
+Hajirahimova (2012a, 2012b), Alguliev, Aliguliyev, Hajirahimova, and Mehdiyev (2011), Alguliev, Aliguliyev, and Isazade (2012, 2013a, 2013b,
+2013c, 2013d), and Alguliev, Aliguliyev, and Mehdiyev (2011a, 2011b, 2013), the authors formalized the sentence selection task as an optimization problem and solved the problem by using evolutionary and swarm optimization algorithms. In Alguliev, Aliguliyev, and Mehdiyev (2011a), document summarization is modelled as a non‐linear 0–1 programming problem where the objective function is defined as Heronian mean of the
+objective functions enforcing the coverage and diversity. To solve the optimization problem, authors developed a discrete PSO based on estimation of distribution algorithm (EDA) that combines the information sharing mechanism of PSO and the idea of EDA. In this study, it is denoted as
+DPSO‐EDASum. The method maximum coverage and less redundancy proposed in Alguliev, Aliguliyev, and Hajirahimova (2012a, 2012b) models
+document summarization as a quadratic Boolean programming problem where objective function is a weighted combination of the content coverage and redundancy objectives. Another successful constraint‐driven document summarization model is presented in Alguliev, Aliguliyev, and
+Isazade (2013a) where the document summarization is modelled as a quadratic integer programming problem and solved with discrete binary
+PSO algorithm. The 0–1 non‐linear model (Alguliev, Aliguliyev, & Isazade, 2013c) uses a weighted linear combination of the arithmetic and geometric means of the coverage and diversity objectives to aggregate them into a single objective function. In Takamura and Okumura (2009), text
+summarization is modelled as a maximum coverage problem that aims at covering as many conceptual units as possible by selecting some
+sentences. Nishino, Yasuda, Hirao, Suzuki, and Nagata (2013) formalized the extractive text summarization task as a combinatorial optimization
+problem of maximizing an objective function that measures summary quality. The objective function combines the three objectives of relevance,
+redundancy, and coverage. Authors introduced Lagrangian relaxation‐based heuristics for obtaining a good approximation solution in much shorter
+time than is possible with integer linear programming. Alguliev, Aliguliyev, and Isazade (2013b) proposed non‐linear optimization model for generic
+document summarization by considering sentence to document, the summary to document, and sentence to sentence relation to extract the
+salient sentences. Using DE algorithm, they solved the optimization problem to come up with a good summary. The objective function is defined
+as a ratio of the coverage and diversity functions. The coverage function provides the covering of the main content of the document, whereas the
+diversity function provides a high diversity in the summary. Notice that high diversity provides low redundancy in the summary. In present work,
+for text summarization, two‐stage sentences selection method is proposed. At first stage, for identification of hidden topics, the sentences are
+clustered by using k‐means method. To select salient sentences from each cluster, at second stage, we propose an optimization model. In this
+model, sentence selection formalized as a non‐linear assignment problem where the objective function is defined as a harmonic mean of the coverage and redundancy objectives. The objective function balances the content coverage and diversity in the summary. In Alguliyev, Aliguliyev, and
+4 of 17 ALGULIYEV ET AL.
+Isazade (2015b), text summarization is modelled as a Boolean programming problem where it attempts to optimize relevance, redundancy, and
+length. While extracting sentences, this method not only focuses on the relevance scores of sentences to the whole sentence collection but also
+focuses on the topic representativeness of the sentences. While generating a summary, this method also deals with the problem of repetition of
+information. In Alguliev, Aliguliyev, and Mehdiyev (2011c), document summarization is formalized as a modified p‐median problem that takes into
+account four basic requirements, namely, relevance, information coverage, diversity, and length limit that should satisfy summaries. In Alguliev,
+Aliguliyev, and Isazade (2013b), for creating an optimal summary, a new DE algorithm with self‐adaptive crossover operator is developed. This
+algorithm can adjust crossover rate adaptively according to the fitness of individuals. The method has been evaluated on DUC2002 and
+DUC2004 data sets. In Alguliev, Aliguliyev, and Isazade (2012), to create an optimal summary, a new version of DE is proposed that dynamically
+adapts scale factor and crossover rate. In Mendoza et al. (2015), text summarization task is modelled as a binary optimization problem, where an
+objective function is a lineal normalized combination of the position of the sentence in the document, sentence length, and coverage of the
+selected sentences in the summary.
+Given a document D, we represent the document D as a set of sentences that compose it, that is, D = {S1, …, Sn}, where Si denotes ith sentence in D
+and n is the number of sentences in the document. The aim of summary generation is to obtain subset of sentences D containing different topics
+of the document while reducing the redundancy in the summary.
+Generally, a document contains a variety of information centred on a main theme and covering different aspects of the main topic. Coverage
+means that the generated summary should cover all subtopics as much as possible. Poor subtopics coverage is usually manifested by absence of
+some summary sentences. Therefore, when doing summarization, if only focusing on the sentences with higher relevance scores to the document,
+the selected summary sentences are inclined to sentences in the subtopics whose sentences distribute widely. Moreover, the subtopics whose
+sentences do not distribute widely will be ignored. For this purpose, while extracting sentences, we not only focus on the relevance scores of
+sentences to document but also focus on the topic representativeness of sentences. The summary sentences should include most of all the
+subtopics.
+In our study, we segment a sentence collection according to its topics. To segment the sentence collection into subtopics, we use the k‐means
+algorithm. When generating a summary, we also need to deal with the problem of repetition of information. This problem is especially important
+for multi‐document summarization, where multiple documents will discuss the same topic. It is known that each of the selected sentences included
+in the summary should be individually important. However, this does not guarantee that they collectively produce the best summary. For example,
+if the selected sentences overlap a lot with each other, such summary is definitely not desired. When many of the competing sentences are available, at given summary length limit, selecting the best summary becomes evidently important rather than selecting the best sentences. Therefore,
+selecting the best summary is a global optimization problem in comparison with the selection of the best sentences.
+Let T = {t1, t2, …, tm} represents all the distinct terms occurred in the document D, where m is the number of terms. Using the vector space model,
+each sentence Si is represented as a vector in m‐dimensional space, Si = [wi1, …, wim], i = 1, …, n, where each component reflects weight of a corresponding term. Different weighting schemes are available. The common and popular one is the term frequency–inverse document frequency
+weighting scheme. In this study instead of using simple term frequency–inverse sentence frequency scheme, symmetric Okapi BM25 (Song, Liang,
+& Park, 2014) framework is utilized for indexing term weights: where inverse sentence frequency isf is obtained by dividing the total number of sentences by the number of sentences containing the term and
+then taking the logarithm of that quotient:Here, n is the total number of sentences in the document D; nj is the number of sentences in which the term tj occurred; tfij is the number of
+occurrences of term tj in sentence Si, li is the length of sentence Si, and lavg is the average sentence length (the number of words divided by the
+number of sentences). This formula normalizes the length of sentences rather than the simple term frequency–inverse sentence frequency method.
+After representation of sentences, now we can calculate the similarity between them. Intuitively, if there are many common words between
+two sentences, they are very similar. Let given two sentences Si = [wi1, …, wim] and Sj = [wj1, …, wjm]. Then to measure similarity between them, we
+use the following measure (Alguliyev, Aliguliyev, & Isazade, 2015a):
+In this stage, the sentences are clustered into different groups to discover latent subtopic information in the document D. Generally, automatic
+clustering is a process of dividing a set of objects into unknown groups, where the clustering algorithm determines the best number k of groups
+(or clusters). That is, objects within each group should be highly similar to each other than to objects in any other group. The automatic clustering
+problem can be defined as follows.
+Clustering is a popular exploratory pattern classification technique that partitions the input data into k groups based on some similarity/dissimilarity metric. The main objective of any clustering technique is to produce a k × n partition matrix U(X) of the given data set X, consisting of n
+patterns, X = {x1, x2, …, xn}. The partition matrix may be represented as U = [uiq] (i = 1, 2, …, n and q = 1, 2, …, k) where uiq is the membership of
+pattern xi to the qth cluster. For fuzzy clustering of the data, 0 < uiq < 1, that is, uiq denotes the degree of belongingness of pattern xi to the
+qth cluster. For hard clustering of the data, uiq ∈ {0, 1}.
+We consider the hard unconstrained partition clustering problem, that is, the distribution of the sentences of the set D = {S1, …, Sn} into a given
+number k of disjoint subsets Cq, q = 1, 2, …, k, with respect to predefined criteria such that
+4) no constraints are imposed on the clusters Cq, q = 1, 2, …, k.
+The sets Cq are called clusters. We assume that each cluster Cq can be identified by its centre Oq ∈ Rm, q = 1, 2, …, k.
+Thek‐means algorithm is formally defined as follows.
+• Step 1. Let k be the number of clusters. In this study, it is defined by Equation (8).
+• Step 2. Initialize the centres to k random locations in the collection D = {S1, …, Sn} and calculate the mean centre of each cluster, Oq, where Oq is
+the centre of cluster Cq.
+• Step 3. Calculate the similarity from the centre of each cluster to each input sentence vector, and assign each input sentence vector to the
+cluster where the similarity between itself and Oq is maximal. Recompute Oq for all clusters that have inherited a new input sentence vector,
+and update each cluster centre (if there are no changes within the cluster centres, discontinue recomputation).
+• Step 4. Repeat Step 3 until all the sentences are assigned to their optimal cluster centres. This ends the cluster updating procedure with k
+disjoint subsets.
+There are different reformulations of the clustering problem as an optimization problem. The k‐means algorithm is based on a within‐class
+compactness, which measures the similarity between input vectors D = {S1, …, Sn}, and cluster representatives Oq using the objective function:
+number of sentences assigned to cluster Cq;In text clustering, the latent topic number in a document cannot be predicted, so it is impossible to offer k effectively. The strategy that we
+used to determine the optimal number of clusters (the number of topics in a document) is based on the distribution of words in the sentences. In other words, the number of clusters (i.e., the number of topics in a document) is defined as n times the ratio of the total number of terms in
+sentences collection to the cumulative number of terms in the sentences considered separately.
+We formalize the sentence selection problem as the optimization problem of maximizing an objective function that measures summary quality.
+Our objective function combines two objectives of coverage f cover (X) (relevance of a summary is the amount of relevant information the summary
+contains) and diversity f diver (X) (summary should not contain multiple sentences that convey the same information):
+Here, xiq indicates one if the sentence Si from cluster Cq is selected, 0 otherwise. li denotes the length (measured in words) of sentence Si
+, lavg is the average length of all sentences, Lmax is the maximum number of words allowed in the generated summary, and nq is the size of cluster Cq.
+It is known that sentence length is among the first causes of reading difficulty of texts. So, to ensure the readability of the summary, in this
+study, a limitation (Equation 10) on the length of candidate sentences is introduced. This constraint avoids appearing of long sentences in the
+summary. Equation (11) is the cardinality constraint, which guarantees that the summary is bounded in length. The integrality constraint on xiq
+(Equation 12) is automatically satisfied in the problem above. Now, our objective is to find the binary assignment X = {xiq} (Equation 12) with
+the best content coverage and high diversity (Equation 9) such that the summary length is at most Lmax (Equation 11).
+The objective function (9) balances the content coverage and diversity in the summary. The term f cover(X) aims to evaluate the wide content
+coverage of the summary. The high value of the term provides that sentences be well grouped in groups according to topics. As said above, the
+summary should not contain multiple sentences that convey the same information. Therefore, at choosing of sentences as a candidate sentence of
+summary, it is necessary to meet a condition that similarity between selected sentences is minimized. This requirement provides the second term.
+The second term f diver (X) minimizes the sum of intersentence similarities among sentences chosen from each cluster. A higher value of this term
+corresponds to higher diversity, that is, low redundancy in the summary.
+Many techniques can be used to solve the optimization problems (4)–(7) and (9)–(12). In recent years, a new optimization algorithm known as DE
+has gradually become more popular and has been successfully applied to solve many optimization problems (Cheng, Zhang, & Neri, 2013; Das &
+Suganthan, 2011; Li, Kwong, & Deb, 2015; Rakshit & Konar, 2015; Storn & Price, 1997). In our study, the optimization problems (9)–(12) were
+solved using a DE algorithm.
+The DE algorithm is a population‐based algorithm‐like genetic algorithms using three operators: crossover, mutation, and selection. The main
+difference in constructing better solutions is that genetic algorithms rely on crossover whereas DE relies on mutation operation. This main operation is based on the differences of randomly sampled pairs of solutions in the population. The algorithm uses mutation operation as a search
+mechanism and selection operation to direct the search toward the prospective regions in the search space.
+The basic idea that DE scheme is based on is to generate new trial vector. When mutation is implemented, several differential vectors
+obtained from the difference of several randomly chosen parameter vectors are added to the target vector to generate a mutant vector. Then,
+a trial vector is produced by crossover recombining the obtained mutant vector with the target vector. Finally, if the trial vector yields better fitness value than the target vector, replace the target vector with the trial vector. The main steps of the basic DE algorithm are described below.
+The basic DE (Das & Suganthan, 2011; Storn & Price, 1997) is a population‐based global optimization method that uses a real‐coded representation. Like the other evolutionary algorithms, DE also starts with a population of P n‐dimensional search variable vectors. The pth individual vector
+of the population at generation t has n components, Up(t)=[up, 1(t), …, up, n(t)], where up, s(t) is the sth decision variable of the pth chromosome in
+the population, s = 1, 2, …, n; p = 1, 2, …, P.
+In literature, these vectors are referred as “genomes” or “chromosomes.” In the initialization procedure, P solutions will be created at random
+to initialize the population. At the beginning of a DE run, independent variables of problem are initialized in their feasible numerical range. Therefore, if the sth variable of the given problem has its lower and upper bound as umin
+where randp, s is a random number between 0 and 1, chosen once for each s ∈ {1, 2, …, n}.
+DE is based on a mutation operator, which adds an amount obtained by the difference of two randomly chosen individuals of the current population, in contrast to most of the evolutionary algorithms, in which the mutation operator is defined by a probability function. Mutation expands
+the search space. In each generation to change each population member, a mutant vector is created.
+For each target vector Up(t), it calculates the weighting combination of the Ulbest.
+where ω is the inertia weight, U gbest(t) is the global best solution of population and Ulbest
+p ð Þt is the local best solution of the pth individual during t
+generation, respectively, and F (t) is the scaling factor:
+where t is the current generation and tmax is the maximum number of generations.
+The inertia weight ω is linearly decreased from 0.9 to 0.4 (Das & Suganthan, 2011):
+The Equation (16) is adopted from the PSO algorithm. In Equation (16), the inertia weight ω(t) and the scaling factor F (t) are time‐varying. The
+objective of this modification is to boost the global search over the entire search space during the early part of the optimization and to encourage
+the individuals to converge to global best solution at the end of generation.
+In order to increase the diversity of the perturbed parameter vectors, a crossover operator is introduced. The parent vector Up(t) is mixed with the
+mutated vector Vp(t) to produce a trial vector Zp(t)=[zp, 1(t), …, zp, n(t)]. It is developed from the elements of the target vector,Up(t), and the elements of the mutant vector, Vp(t):
+up;sð Þt otherwise (
+CR ∈ [0, 1] is the crossover constant that controls the recombination of target vector and mutant vector to generate trial vector, and is the randomly chosen index that ensures at least one element from mutant vector is obtained by the trial vector; otherwise, there
+is no new vector would be produced, and the population would not evolve.
+The evaluation function is an operation to evaluate how good the solution (sentence selection,i.e., summary) of each individual is, making comparison between different solutions possible. The evaluation function consists of calculating the value of the objective function (9) of the summary
+represented by each individual.
+Selection compares the quality of the trial vector Zp(t) and the target vector Up(t) and decides which one is able to survive to the next generation.
+To keep the population size constant over subsequent generations, the selection process is carried out to determine which one of the child and
+the parent will survive in the next generation, that is, at time t + 1. All solutions in the population have the same chance of being selected as parents without dependence of their fitness value. The child produced after the mutation and crossover operations is evaluated. Then, the performance of the child vector and its parent is compared, and the better one is selected. The target vector (Up(t)) or trial vector (Zp(t)) that
+generates a better solution will be selected as the target vector of the next generation (Up(t + 1)). The selection rule is given in Equation (20):
+where fit(U) denotes the fitness value of individual U. Therefore, if the child yields an equal and higher value of the fitness function, it replaces its
+parent in the next generation; otherwise, the parent is retained in the population. Hence, the population either gets better in terms of the fitness
+function or remains constant but never deteriorates.
+Mutation, crossover, and selection continue until some stopping criterion is reached. If the predefined maximum iteration number is reached, then
+the DE algorithm is terminated and output the best solution obtained by DE as the result. Otherwise, it is continued to carry out the position of
+individual update process (mutation, crossover, and selection process).
+The motivation to use the sigmoid function is to map interval umin to the interval of a probability function. After such transformation from the real‐coded representation, we obtain the binary‐coded representation,
+up, s(t) ∈ {0, 1}, where the up, s(t) = 1 indicates that the sth sentence is selected to be included to the summary; otherwise, the sth sentence is not be
+ALGULIYEV ET AL. 9 of 17
+selected. For example, the individual Up(t) = [1, 0, 0, 1, 1] represents a candidate solution that the first, fourth, and fifth sentences are selected to be
+included in the summary.
+After binarization stage, we can transform the representation Up(t + 1) = [up, 1(t + 1), …, up, n(t + 1)] to variables X = {xip} used for objective
+function calculation (9).
+When population initialization, mutation, crossover, and binarization are implemented, the new generated solution will not satisfy the constraint
+(11). The most popular constraint handling strategy at present is penalty method, which often uses function to convert a constrained problem into
+an unconstraint one. Therefore, this strategy is very convenient to handle the constraints of the evolutionary algorithm by punishing the infeasible
+solution during the selection procedure to ensure that the feasible ones are favoured.
+For evaluation of the quality of a solution provided by a chromosome, it is necessary to have a fitness function. The fitness value is an indicator of the quality of a chromosome as a solution candidate to the optimization problem under study. Therefore, in computing the value of fitness
+function, a penalty term is added to the fitness function in order to convert the constrained problem into an unconstrained one. An additional term
+is determined by penalizing the infeasible solutions with β (β > 0). Fitness function is formally defined as follows:
+where problem variables xiq are defined by the decoding rule (23).
+The first multiplier f (X) in Equation (24) is the objective function (9). The second multiplier is defined as an additional penalty function for
+maximization. β represents the cost of overloaded summary. Initial value of β is set by the user. If a solution is not feasible, the second term will
+be less than 1, and therefore, the search will be directed to a feasible solution. If the summary length is not exceeded, this term will be equal to 1
+to ensure that the solution is not to be penalized. The parameter β can be increased during the run to penalize infeasible solutions and drive the
+search to feasible ones that means the adaptive control of the penalty costs:
+where tmax is the maximum number of generations and β− and β+ are the start and end values of the parameter β, respectively.
+In this section, we conducted the experiments to evaluate the performance of the proposed method. We used the data sets provided in DUC. In
+the recent years, DUC (http://duc.nist.gov/) has been established as a system evaluation competition for researchers to compare the performance
+of different summarization approaches on common data sets.
+We describe the data used throughout our experiments. We conduct experiments on the DUC2001 and DUC2002 data sets and corresponding
+summaries generated for each of documents. The DUC2001 data collection contains 30 sets of approximately 10 documents from news reports in
+English, consisting of 309 articles that cover various topics. Each set is accompanied by reference summaries for single and multiple documents.
+The DUC2002 collection, meanwhile, consists of 567 documents in 59 sets. As with DUC2001, DUC2002 contains various English news articles
+collected from TREC‐9 for the document summarization task. In these collections, the summary generated should be less than 100 words and have
+several reference summaries for each document. Table 1 gives a short summary of the data sets.
+In this experiment, preprocessing of the document involves linguistic techniques such as segmenting sentences, stop words removal, removal of
+upper case, and stemming. The segmentation process consists of dividing the texts into meaningful units; in our experiment, text is splitted into
+sentences. Using stop words removal, the words that are very common within a text and are also considered as noisy terms are removed. Obviously, their removal can be effective before the accomplishment of a natural language processing task. Such removal is usually performed by word
+filtering with the aid of a list of stop words. In our work, the stop words were extracted from the English stop words list (http://jmlr.csail.mit.edu/
+papers/volume5/lewis04a/a11‐smart‐stop‐list/english.stop). Stemming is a computational procedure that reduces the words with the same root.
+All words are stemmed using Porter Stemmer (http://www.tartarus.org/martin/PorterStemmer/). The preprocessing process is carried out before
+running the algorithm for the automatic generation of summaries.
+In order to evaluate and compare the performance of the proposed method, we used the standard ROUGE metric (Lin, 2004), which is adopted by
+DUC for automatic summarization evaluation. The ROUGE measures summary quality by counting the overlapping units such as n‐gram, word
+sequences, and word pairs between the candidate summary and a reference summary. The ROUGE system includes various automatic assessment
+approaches, such as ROUGE‐N, ROUGE‐L, and ROUGE‐S. ROUGE‐L calculates the similarity between a reference summary and a candidate summary based on the longest common subsequence. ROUGE‐S is a measure of the overlap of skip‐bigrams between a candidate and a reference
+summary. ROUGE‐N compares two summaries, the system summary and the human summary, based on total number of matches. It is calculated
+as follows: where N is used for the length of the N‐gram and Countmatch(N − gram) is the total number of N‐grams co‐occurring in a reference summary and a
+candidate summary. Count(N − gram) is the number of N‐grams in the reference summaries. In our evaluation, we used two metrics of ROUGE:
+ROUGE‐1 and ROUGE‐2. We report the recall score of ROUGE‐1 and ROUGE‐2 to assess and compare the COSUM with other methods.
+The parameters of the proposed DE are as follows: the population size, P = 200; the number of iteration (fitness evaluation), tmax = 1000; the
+crossover rate, CR = 0.7; the start and end values of the parameter β, β− = 0.1 and β+ = 0.5; and the inertia weight ω that is defined by Equation (18).
+The results presented in this section were obtained by evaluating summaries generated with 100 words (Lmax = 100), and averaging 20 runs of the
+algorithm, which was implemented on an Intel® Core™ i7‐3537 U CPU @2.00 GHz, 2.00 GHz PC with 6 GB of RAM on Windows 10.
+5.4 | Performance evaluation In this section, the performance of our method is compared with other well‐known or recently proposed methods. Comparison of the proposed
+method was made against the following methods: (a) DPSO‐EDASum (optimization approach based on discrete PSO and EDA; Alguliev, Aliguliyev,
+& Mehdiyev, 2011a), (b) LexRank (graph‐based approach; Erkan & Radev, 2004), (c) CollabSum (clustering and graph‐ranking based approach; Wan
+et al., 2007a), (d) UnifiedRank (graph‐based approach; Wan, 2010), (e) 0–1 non‐linear (binary optimization based on discrete PSO approach;
+Alguliev, Aliguliyev, & Isazade, 2013c), (f) QCS (machine learning approach based on hidden Markov model; Dunlavy et al., 2007), (g) SVM
+(algebraic approach; Yeh et al., 2005), (h) FEOM (fuzzy evolutionary approach; Song et al., 2011), (i) CRF (machine learning approach based on
+CRF; Shen et al., 2007), (j) MA‐SingleDocSum (metaheuristic approach based on genetic operators and guided local search; Mendoza et al.,
+2014), (k) NetSum (machine learning approach based on neural nets; Svore et al., 2007), (l) manifold ranking (probabilistic approach using greedy
+algorithm; Wan et al., 2007a), (m) ESDS‐GHS‐GLO (binary optimization based on the global‐best harmony search heuristic, a greedy local search
+algorithm; Mendoza et al., 2015), and (n) DE (clustering and metaheuristic based approach; Aliguliyev, 2009a). These methods have been chosen
+for comparison because they have achieved the best results on the DUC2001 and DUC2002 data sets.
+We first run our method on the DUC2001 data set, and then, we extend the experiment on the DUC2002 data set with the same control
+parameters. Table 2 shows the results obtained in terms of ROUGE‐1 and ROUGE‐2 metrics for COSUM and other methods on the DUC2001
+and DUC2002 data sets. The results demonstrate that COSUM outperforms most of the other evaluated methods and it produces very competitive results. In Table 2, bold entries represent the results in terms of average evaluation metrics. The number in the right part of each ROUGE
+value in Table 2 shows the rank of each method among all the methods.
+As can be seen in Table 2, DE and FEOM demonstrate first and second results in ROUGE‐1 measure for DUC2001 data set. For this data set,
+the methods MA‐SingleDocSum and COSUM respectively show the first and second results in ROUGE‐2 measure. On the DUC2002 data set,
+UnifiedRank and LexRank obtained the second rank in terms of ROUGE‐1 and ROUGE‐2 measures, respectively. As seen from Table 2, DPSO‐
+EDASum and 0–1 non‐linear are the worst methods; for all cases, they respectively obtained 14th and 15th positions in the ranking list. On
+the DUC2002 data set, COSUM presents the best ROUGE values.
+In comparison with the ROUGE values for other methods, our method achieved significant improvement. Table 3 shows the improvement of
+COSUM with respect to the other methods in the metrics ROUGE‐1 and ROUGE‐2 on both DUC2001 and DUC2002 data sets. It can be seen
+that COSUM obtains the high ROUGE values and outperforms all the other methods. For comparison, we use the relative improvement. The relative improvement is calculated as (b − a) * 100/a when b is compared with a. In Table 3, “+” means the method COSUM improves the compared
+methods and “−” means the opposite. Table 3 presents that the method COSUM shows the best results compared with the other methods. As can
+be seen in Table 3, the method COSUM had the best ROUGE values with very large improvements over other methods on both data sets
+DUC2001 and DUC2002. On the DUC2001 data set, the method COSUM concedes only to the methods FEOM, DE, and MA‐SingleDocSum.
+The comparison of the methods FEOM and DE with COSUM shows that they improve the performance by 0.96% and 1.23% in ROUGE‐1 metric,
+respectively, and the comparison of the method MA‐SingleDocSum with COSUM shows that it improves the performance by 0.10% in ROUGE‐2
+metric.
+From the results presented in Tables 2 and 3, it cannot be identified which method demonstrates the best results on both data sets. Therefore,
+we present a unified ranking of the methods taking into account the position of each method demonstrated for each measure. The unified rank
+can be computed as follows (Aliguliyev, 2009b):where Rr denotes the number of times the method appears in the rth rank. The M is the number of compared methods. In this study, it is equal
+to 15. High values of Rank are desired.
+The unified ranking of the methods is presented in Table 4.
+Considering the results of Table 4, the following findings can be observed:
+• The method COSUM ranks first in the unified rank (the highest value of the Rank in Table 4), beating the best state‐of‐the‐art methods such as
+FEOM, DE, and MA‐SingleDocSum, despite the fact that on the DUC2001 data set, these methods obtained better ROUGE‐1 and ROUGE‐2
+values.
+The methods, MA‐SingleDocSum and ESDS‐GHS‐GLO, which optimize linear combination of the sentence position in the document and sentence length and coverage of the selected sentences in the summary, respectively, take the second and fourth positions in the ranking list.
+Note. DUC: Document Understanding Conference; SVM: support vector machine; PSO: particle swarm optimization; QCS: query, cluster, summarize; EDA:
+estimation of distribution algorithm; FEOM: fuzzy evolutionary optimization model; CRF: conditional random field; DE: differential evolution.
+12 of 17 ALGULIYEV ET AL.
+The performance of the UnifiedRank, FEOM, and DE is the same, these methods—such as COSUM and MA‐SingleDocSum—also address the
+automatic text summarization as an optimization problem, but COSUM, DE, and FEOM use the concept of clustering in the representation of
+the solution.The graph‐based methods, LexRank and UnifiedRank, outperform supervised methods NetSum, CRF, and SVM, probabilistic method QCS, and
+algebraic reduction method manifold ranking. However, they are outperformed by the methods based on optimization and evolutionary
+models such as COSUM and MA‐SingleDocSum.
+Except for the methods DPSO‐EDASum and 0–1 non‐linear, the unsupervised methods (COSUM, MA‐SingleDocSum, LexRank, ESDS‐GHS‐
+GLO, UnifiedRank, FEOM, and DE) outperform the supervised methods (NetSum, CRF, and SVM).
+The supervised methods, NetSum and CRF, just as with QCS based on probabilistic models, outperform those of algebraic reduction such as
+SVM and manifold ranking.Note. DUC: Document Understanding Conference; SVM: support vector machine; PSO: particle swarm optimization; QCS: query, cluster, summarize; EDA:
+estimation of distribution algorithm; FEOM: fuzzy evolutionary optimization model; CRF: conditional random field; DE: differential evolution.
+Note. SVM: support vector machine; PSO: particle swarm optimization; QCS: query, cluster, summarize; EDA: estimation of distribution algorithm; FEOM:
+fuzzy evolutionary optimization model; CRF: conditional random field; DE: differential evolution.
+ALGULIYEV ET AL. 13 of 17
+• The optimization‐based methods, such as DPSO and 0–1 non‐linear, are outperformed by the other methods, because they do not use the
+concept of clustering.
+• In comparison of the top five methods (COSUM, MA‐SingleDocSum, LexRank, ESDS‐GHS‐GLO, and UnifiedRank) with the other methods, we
+observe that (a) combination of clustering with the optimization, graph‐based, and metaheuristic approaches and (b) graph‐based approach
+and its combination with the optimization are the most promising direction of research in the extractive generic document summarization.
+6 | CONCLUSIONS AND FUTURE WORK
+In this work, for generating extractive summaries for a document, a method combining the clustering and optimization approaches is proposed.
+The method attempts to optimize three properties (a) coverage: summary should cover different aspects of the main topic of source text; (b) diversity: summaries should not include the sentences that convey the same information; and (c) length: summary and each selected sentence are
+bounded in lengths. First, to discover topics in a document, this method uses the k‐means algorithm that groups the sentences by topics into clusters. Next, the method selects representative sentences from each cluster to produce a summary providing the best content coverage and high
+level of diversity. To create an optimal document summary, an objective function is defined as a harmonic mean of the objective functions
+enforcing the coverage and diversity of the selected sentences in the summary.
+The COSUM method was evaluated by means of the measures ROUGE‐1 and ROUGE‐2 on the data sets DUC2001 and DUC2002. For the
+data set DUC2002, the best results have been obtained by the method COSUM, outperforming MA‐SingleDocSum, the best prior method by
+1.66% and 1.09%, and LexRank, the best graph‐based method, by 2.34% and 0.61%, in terms ROUGE‐1 and ROUGE‐2 metrics, respectively. It
+should be noted that in the unified ranking, the method COSUM ranks first and the methods MA‐SingleDocSum and LexRank respectively take
+the second and third positions in the ranking list. On DUC2001 data set, the method COSUM conceded only to the methods DE (−1.23%) and
+FEOM (−0.96%) in ROUGE‐1 metric. And the method COSUM on DUC2001 data set in ROUGE‐2 metric only conceded to the MA‐SingleDocSum
+(−0.10%). Based on the analysis of results of the methods, we can conclude that combination of clustering and optimization approaches and also
+combination of optimization with the graph‐based approaches are more promising directions for automatic document summarization.
+In future research, we would like to (a) conduct our experiments on other data sets, (b) include other characteristics in the objective function
+that will allow to select the sentences that are most relevant to the content of the documents, (c) develop other algorithms for solving the optimization problems, and (d) study the influence of different similarity measures on performance of the method.
+CONFLICTS OF INTEREST
+The authors declare that they have no conflicts of interest with respect to research, authorship, and/or publication of this work.
+</TEXT>
+<NOTE>End Adv for Mon AMs, March 14</NOTE>
+</DOC>
+
