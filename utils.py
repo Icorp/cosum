@@ -12,6 +12,8 @@ from findIt import findNumWordInSentence
 from findIt import final_token
 from findIt import findTokenAndLower
 
+
+# this method is find how many cluster is need ...
 def findK(text):
     n = len(sent_tokenize(text))
     num_of_terms = len(final_token(text))
@@ -19,14 +21,7 @@ def findK(text):
     k=n*(num_of_terms/num_of_words)
     return round(k,0)
 
-
-def computeSimClustering(S1,S2):
-    f1 = funcSum(S1,S2)
-    f2 = funcSum2(S2,S2)
-    f3 = funcSum3(S1)
-    f4 = funcSum3(S2)
-    return round(1-((2*f1*f2)/((f4*f1)+(f3*f2))),3)
-
+# This method is select random numbers for init centroid of cluster ...
 def selectCenterOfCluster(k,text):
     # Sentences...
     sentences = sent_tokenize(text)
@@ -40,14 +35,14 @@ def selectCenterOfCluster(k,text):
         indexs.append(sentences.index(a[i]))
     return indexs
 
-# M = number of compared methods =15
-# R = number of times the method appears in the rth rank
+# TODO:
 def computeRank():
     M = 15
     summ = 0
     for r in range(M):
         summ += ((M-r+1)*R[r])/M
 
+#  This method is convert kmeans.labels to matrix(CQ)
 def labelInMatrix(labels):
     maxQ = max(labels)
     results = []
@@ -62,6 +57,7 @@ def labelInMatrix(labels):
         results.append(result)
     return results
 
+# This method is return cluster with index of sentence ...
 def clusteringSentence(label):
     result = []
     cluster = max(label)
@@ -73,41 +69,7 @@ def clusteringSentence(label):
         result.append(cash) 
     return result
 
-def randomizer(arr):
-    result = []
-    for i in range(len(arr)):
-        k = random.randint(1, len(arr[i]))
-        sampling = random.sample(arr[i], k)
-        result.append(sampling)
-    return result
-def randomizer_3(arr):
-    result = []
-    for i in range(len(arr)):
-        sampling = random.sample(arr[i], 1)
-        result.append(sampling)
-    return result
-    
-def randomizer_6(arr):
-    result = []
-    for i in range(len(arr)):
-        sampling = random.sample(arr[i], 2)
-        result.append(sampling)
-    return result
-
-#  [[0,1],[0,1]]  ==>  [0,1,0,1]
-def mix(arr):
-    result = []
-    for i in range(len(arr)):
-        for k in range(len(arr[i])):
-            result.append(arr[i][k])
-    return result
-
-def selectSentences(arr,S):
-    result = []
-    for k,v in enumerate(arr):
-        result.append(S[v])
-    return result
-
+# This method is compute similiraty between 2 sentences
 def computeSimilarity(Wi,Wj):
     f1 = funcSum(Wi,Wj)
     f2 = funcSum2(Wi,Wj)
@@ -115,49 +77,16 @@ def computeSimilarity(Wi,Wj):
     f4 = funcSum3(Wj)
     return 1-((2*f1*f2)/((f4*f1)+(f3*f2)))
 
-def get_summary(random_s,sentences):
-    result = []
-    for i in range(len(random_s)):
-        for k in range(len(random_s[i])):
-            result.append(sentences[random_s[i][k]])
-    return result
-    
-def listToString(s):
+# This method is concatenate list elements to strings
+def concatenate_list_data(s):
     # initialize an empty string 
     str1 = " "  
     
     # return string   
     return (str1.join(str(x) for x in s)) 
 
-def toVector(array):
-    cash = []
-    for i in range(len(array)):
-        cash.append(len(array[i]))
-    max_len = max(cash)
-    index = cash.index(max_len)
-    for i in range(len(array)):
-        a = len(array[i])
-        b = len(array[index])
-        for k in range(b-a):
-            array[i].append(0)
-    for q in range(len(array)):
-        print(len(array[q]))
-    return array
-
-def vectorize(text):
-    sent_tokens = sent_tokenize(text)
-    result = []
-    word_tokens = final_token(text)
-    for i in range(len(sent_tokens)):
-        cash = []
-        for w in range(len(word_tokens)):
-            cash.append(findNumWordInSentence(sent_tokens[i],word_tokens[w]))
-        result.append(cash)
-    print(sent_tokens)
-    print(word_tokens)
-    print(result)
-    return result
-"""    
+"""
+# This method is calculate euclidian distance
 def euclidian(X,Y):
     point1 = np.array(X)
     point2 = np.array(Y)
@@ -173,6 +102,8 @@ def euclidian(X,Y):
     # printing Euclidean distance 
     return np.sqrt(sum_sq)
 """
+
+#   loop for similarity function (equantion 3) 
 def funcSum(Wi,Wj):
     seqSum=0.0
     m = len(Wi)
@@ -181,6 +112,7 @@ def funcSum(Wi,Wj):
         seqSum+=cash
     return seqSum    
 
+#   loop for similarity function (equantion 3)
 def funcSum2(Wi,Wj):
     seqSum=0.0
     m = len(Wi)
@@ -189,6 +121,7 @@ def funcSum2(Wi,Wj):
         seqSum+=cash
     return seqSum
 
+#   loop for similarity function (equantion 3)
 def funcSum3(W):
     seqSum=0.0
     m = len(W)
@@ -196,6 +129,7 @@ def funcSum3(W):
         seqSum+=W[k]
     return seqSum
 
+#   loop for diver function (equantion 14 )
 def funcSum4(nq,S,q,clusterSentence,genome):
     summ = 0
     n = nq - 1
@@ -206,12 +140,3 @@ def funcSum4(nq,S,q,clusterSentence,genome):
             summ += (1-similarity)*genome[clusterSentence[q][i]]*genome[clusterSentence[q][j]]
     return summ
 
-def funcSumCenter(tokens,c,l,q):
-    seqSum=0.0
-    for i in range(len(tokens)):
-        if i in c[q]:
-            uiq = 1
-        else:
-            uiq = 0
-        seqSum += tokens[i][l]*uiq
-    return seqSum

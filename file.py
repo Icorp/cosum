@@ -1,6 +1,6 @@
 import pickle
 import json
-from utils import listToString
+from utils import concatenate_list_data
 import re
 
 def writeToFile(data):
@@ -17,7 +17,7 @@ def saveJson(nameFile,data):
         json.dump(data, outfile)
 def saveStats(fx,indexs,scores):
     fx = str(fx)
-    indexs = listToString(indexs)
+    indexs = concatenate_list_data(indexs)
     rouge = str(round(scores.get('rouge1').recall,3))
     result = "Fx = "+fx+"\t"+"Indexs = "+indexs+"\t"+"Rouge = "+rouge+"\n"
     f = open('results/stats.txt', 'a') 
@@ -27,14 +27,14 @@ def saveStats(fx,indexs,scores):
     print("Status:Ok")
 
 def saveGenomes(genomes):
-    indexs = listToString(genomes)
+    indexs = concatenate_list_data(genomes)
     result = "Sentences = "+indexs+"\n"
     f = open('results/genomes.txt', 'a') 
     f.write(result)
     f.close()
 
 def saveZpt(zpt):
-    zpt = listToString(zpt)
+    zpt = concatenate_list_data(zpt)
     result = "Sentences = "+zpt+"\n"
     f = open('results/zpt.txt', 'a') 
     f.write(result)
@@ -42,7 +42,7 @@ def saveZpt(zpt):
 
 
 def saveBestGenomes(genomes,t,p,best_global):
-    indexs = listToString(genomes)
+    indexs = concatenate_list_data(genomes)
     t = str(t)
     p = str(p)
     best_global = str(best_global)
@@ -62,7 +62,7 @@ def readText(name):
     return text
 
 def saveRandomSummary(index):
-    indexs = listToString(index)
+    indexs = concatenate_list_data(index)
     result = "Sentences = "+indexs+"\n"
     f = open('results/bestRandom.txt', 'a') 
     f.write(result)
