@@ -144,8 +144,14 @@ class Ga(Objective):
                 self.zpt.append(self.vpt[i])
             else:
                 self.zpt.append(self.upt[i])
-        
+    
     def calculate_words(self):
+        """   
+        Equation(19)
+
+        About:
+            Calculate number of word in sentence, and calcalute all summ
+        """
         self.li = []
         for i in range(len(self.data)):
             counter = 0
@@ -156,7 +162,7 @@ class Ga(Objective):
 
     def check_loop(self, types):
         """   
-        Equation(24) Second multiplier
+        Equation(25) Second multiplier
 
         About:
             . The second multiplier is defined as an additional penalty function for maximization. 
@@ -174,8 +180,13 @@ class Ga(Objective):
                 for i in self.clusterSentence[q]:
                     self.check_l_value += self.li[i]*self.genomes[i] - self.l_avg
 
-    # calculate fitness ... 
     def calculate_fitness(self, t):
+        """   
+        Equation(24) Second multiplier
+
+        About:
+                The first multiplier f (X) in Equation (24) is the objective function (9)
+        """
         self.objectives = Objective()
         self.objectives.Fx(self.data, self.genomes, self.cq, self.centroids, self.clusterSentence, self.K)
         self.F = self.objectives.F

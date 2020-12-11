@@ -85,7 +85,6 @@ def concatenate_list_data(s):
     # return string   
     return (str1.join(str(x) for x in s)) 
 
-"""
 # This method is calculate euclidian distance
 def euclidian(X,Y):
     point1 = np.array(X)
@@ -101,7 +100,6 @@ def euclidian(X,Y):
     # Doing squareroot and 
     # printing Euclidean distance 
     return np.sqrt(sum_sq)
-"""
 
 #   loop for similarity function (equantion 3) 
 def funcSum(Wi,Wj):

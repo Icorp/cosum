@@ -1,6 +1,5 @@
 import math
 import re
-import sys
 import random
 import logging as log
 import numpy as np
@@ -11,24 +10,22 @@ from time import perf_counter
 from findIt import findNumSentencesSearchingWord
 from findIt import finalTokenSentence
 from findIt import final_token
-from utils import funcSumCenter
 from utils import computeSimilarity
-#from utils import euclidian
-
-# Test
-from nltk.corpus import stopwords
+from utils import euclidian
 
 # This is vectorizer. Todo: write documentation ...
 class CosumTfidfVectorizer:
+
+    # This memthod is union same words
     def unionTokens(self):
         self.vocabulary = sorted(set(self.vocabulary), key=self.vocabulary.index)
         
-    
+    # Compute Term frequency
     def computeTF(self, word, i):
         indices = [i for i, x in enumerate(self.sentences_in_words[i]) if x == word]
         self.TF = len(indices)        
     
-            
+    #   Compute the number of sentences in which the term tj occurred;     
     def findNumSentencesSearchingWord(self, word):
         self.nj = 0
         for i in range(len(self.sentences_in_words)):
@@ -39,16 +36,14 @@ class CosumTfidfVectorizer:
     # Example:
     #   compute(self," I will be better tommorrow")
     #   Output: 2
-
     def computeLi(self, i):
         self.l_i = len(self.sentences_in_words[i])
     
-    
-
+    # Compute Invers sentence frequency (self.isf) (equantion 2)
     def computeISF(self, word):
         if self.nj == 0:
             log.error("Данного слова в этом документ нет, введите словo из документа.")
-            sys.exit()
+            exit()
         else:
             self.isf =  math.log10(len(self.sentences)/self.nj)
 
@@ -62,20 +57,14 @@ class CosumTfidfVectorizer:
         self.computeTF(word, i)
         self.findNumSentencesSearchingWord(word)
         self.computeISF(word)
-        #print("TF\t i = ", i, "\t w = ", word, self.TF)
-        #print("IDF\t w = ", word, self.nj)
-        #print("L_I",self.l_i)
-        #print("L_avg",self.l_avg)
-        #print("L_i / L_avg = ",self.l_i/self.l_avg)
-        #print()
         self.weight = (self.TF/(self.TF+0.5+(1.5*(self.l_i/self.l_avg))))*self.isf
     
+    # This method is convert sentence in word. [this is first sentence] => [first sentenc]
     def convertSentenceToWords(self):
         self.sentences_in_words = []
         for i in range(len(self.sentences)):
             self.sentences_in_words.append(finalTokenSentence(self.sentences[i]))
     
-
     # Метод считает вес всех слов.
     def computeFullWeight(self):
         self.weight_matrix = []
@@ -85,9 +74,7 @@ class CosumTfidfVectorizer:
             for m in range(len(self.filter_words)):
                 self.computeTDIDF(self.filter_words[m],i)
                 cash.append(self.weight)
-            #print("Time:",round(time.perf_counter(),3)," sec")
             self.weight_matrix.append(cash)
-
 
     def fit(self,document):
         self.document = document
@@ -104,7 +91,7 @@ class CosumTfidfVectorizer:
         # 3 step: Stemming
         self.convertSentenceToWords()
 
-        # 3 step: calculate weight
+        # 4 step: calculate weight
         self.computeFullWeight()
 
 class K_means:
@@ -128,11 +115,9 @@ class K_means:
         self.centroids = []
         for k,v in enumerate(self.centroidsIndexs):
             self.centroids.append(self.data[v])
-    
-        
+       
     # compute similirity between centroid and sentences 
     def computeSimilarity(self):
-        """
         if self.metric == "euclidean":
             self.similarities = []
             for i in range(len(self.data)):
@@ -141,13 +126,12 @@ class K_means:
                     cash.append(euclidian(self.data[i],self.centroids[k]))
                 self.similarities.append(cash)
         else:
-        """
-        self.similarities = []
-        for i in range(len(self.data)):
-            cash = []
-            for k in range(self.k):
-                cash.append(computeSimilarity(self.data[i],self.centroids[k])*self.matrix[k][i])
-            self.similarities.append(cash)
+            self.similarities = []
+            for i in range(len(self.data)):
+                cash = []
+                for k in range(self.k):
+                    cash.append(computeSimilarity(self.data[i],self.centroids[k])*self.matrix[k][i])
+                self.similarities.append(cash)
         
     # compute similirity between centroid and sentences 
     def computeSimilarityBetweenSentences(self):
@@ -169,20 +153,7 @@ class K_means:
                 label = self.similarities[i].index(max(self.similarities[i]))
                 self.labels.append(label)
     
-    # convert labels to matrix
-    def labelInMatrix(self):
-        self.matrix = []
-        maxQ = max(self.labels)
-        for q in range(maxQ+1):
-            cash = [0] * (len(self.labels) - 1)
-            indexs = [i for i,x in enumerate(self.labels) if x==q]
-            for o in indexs:
-                cash.insert(o,1)
-            if len(cash)>len(self.labels):
-                a = cash[:-(len(cash)-len(self.labels))]
-                cash = a
-            self.matrix.append(cash)
-    
+    # conver label in matrix 
     def convertLabelInMatrix(self):
         self.matrix = []
         for q in range(self.k):
@@ -226,10 +197,17 @@ class K_means:
 
     # compute kMeans
     def fit(self, data, metric):
-        # If NullCluster is true. All clusters have some elements, else NullCluster is False on of cluster doesnt have value.
+
+        # If NullCluster is true, that is each cluster have at least one sentence assigned;
         self.NullCluster = False
+
+        # metric is name of metric, for calculate distance between two elements
         self.metric = metric
+        
+        # this is data
         self.data = data
+
+        # start find cluster
         while self.NullCluster != True:
             # select center from centences
             self.selectCenterOfCluster()
@@ -259,14 +237,15 @@ class K_means:
                     isNull.append(False)
             if all(isNull):
                 self.NullCluster = True
-
-        
         
         print("Центроиды:",self.centroidsIndexs)
+
         for i in range(self.max_iterations):
+
+            # Save value of previous centroids
             previous_centroid = self.centroids
         
-            # compute similarity between S1,S(random center)
+            # compute similarity between S1,Oq(random center)
             self.computeSimilarity()
             
             # clustering result
@@ -275,13 +254,11 @@ class K_means:
             # toMatrix
             self.convertLabelInMatrix()
                 
-            # get index
+            # get index of sentence in clusters
             self.clusteringSentence()
             
             # average the cluster datapoints to re-calculate the centroids
-            
             self.calculateCenter()
-            # convert labels to Cq 
             
             # check centroid value on equals
             try:
@@ -290,7 +267,6 @@ class K_means:
                 print(comparison)
             except AttributeError:
                 print(comparison)
-                sys.exit()
+                exit("error in checking centroid value")
             if equal_arrays == True:
                 break
-        self.y_means = np.array(self.labels)
