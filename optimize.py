@@ -7,9 +7,9 @@ from nltk.tokenize import sent_tokenize
 from nltk.tokenize import word_tokenize
 import sys
 
-l_max = 100
+
 class Objective(K_means):
-    
+
     # O - it is cluster centers. O [[],[],[]]
     # x - [[2,3,4,5],[5,23,46,5],[...]]
     # w - weight of sentences. [[w11..w1n],[w21..w2n],[...]]
@@ -17,7 +17,7 @@ class Objective(K_means):
         self.f_cover = 0
         for q in range(self.K):
             for i in self.clusterSentence[q]:
-                self.f_cover += computeSimilarity(self.data[i],self.O[q])
+                self.f_cover += computeSimilarity(self.data[i], self.O[q])
 
     #   The second term f diver (X) minimizes the sum of intersentence similarities among sentences chosen from each cluster.
     #   Equation (14)
@@ -28,15 +28,16 @@ class Objective(K_means):
         summ = 0
         for q in range(self.K):
             nq = len(self.clusterSentence[q])
-            summ += funcSum4(nq,self.data,q,self.clusterSentence, self.genomes)
+            summ += funcSum4(nq, self.data, q,
+                             self.clusterSentence, self.genomes)
             self.f_diver += (2/nq*(nq-1))*summ
-    
+
     def computeObjectiveFunction(self):
         self.F = 0
         self.compute_f_cover()
         self.compute_f_diver()
         self.F = (2*self.f_cover*self.f_diver)/(self.f_cover+self.f_diver)
-    
+
     def Fx(self, data, genomes, cq, centroids, clusterSentence, K):
         self.K = K
         self.clusterSentence = clusterSentence
@@ -46,15 +47,9 @@ class Objective(K_means):
         self.genomes = genomes  # sentences
         self.computeObjectiveFunction()
         self.printRandomSentences()
-    # This stage check all statements. 
-    # li*x[i][q] <= Lavg
-    # li*x[i][q] <= Lmax
-    # Lmax = 100
-    # lavg = number of words / number of sentences
 
     def printRandomSentences(self):
         self.selected_sentences = []
         for i in range(len(self.genomes)):
             if self.genomes[i] == 1:
                 self.selected_sentences.append(i)
-        #print("Количество предложении =",self.selected_sentences,"\n")
