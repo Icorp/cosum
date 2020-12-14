@@ -219,11 +219,10 @@ class Ga(Objective):
         my_string = "Population = {}\t F(X) = {}\t fitness = {}\t time = {}"
         data = {}
         for p in range(self.pop_size):
-            population = []
+            self.population = []
             # start_time
             start_time = time.time()
             data['pop'+str(p)] = []
-            self.pop_genomes = []
             self.best_local = 0.0
 
             # initialization start random genomes_values
@@ -242,9 +241,8 @@ class Ga(Objective):
                 prev_genomes = self.genomes
 
                 # appending
-                self.pop_genomes.append(self.genomes)
-                population.append(prev_fitness)
-                self.best_local = max(population)
+                self.population.append(prev_fitness)
+                self.best_local = max(self.population)
 
                 # check best global
                 if self.best_local > self.best_global:

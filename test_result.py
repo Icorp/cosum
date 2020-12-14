@@ -22,7 +22,7 @@ sentences = sent_tokenize(text)
 
 
 # Convert genomes to normal summary text
-indexs = [3,6,12,14,22,24,25,27,34,36,41,44,45,46]
+indexs = [9,12, 13, 18, 24, 25, 26, 34, 35, 36 ,40, 42]
 
 hypothesis = ""
 for i in indexs:
