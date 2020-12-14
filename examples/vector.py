@@ -1,4 +1,7 @@
-from cosum.cosum import vectorize
+from cosum import CosumTfidfVectorizer
 
 text = "This is sentence one. This is sentence three. This is sentence four. This is sentence five."
-tokens = vectorize(text)
+vectorizer = CosumTfidfVectorizer()
+vectorizer.fit(text)
+vector = vectorizer.weight_matrix
+print(vector)
