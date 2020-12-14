@@ -228,7 +228,7 @@ class Ga(Objective):
             # initialization start random genomes_values
             self.initialization()
 
-            # # convert to genome [1,0,0,1,1]
+            # convert to genome [1,0,0,1,1]
             self.binarization(self.upt)
 
             # calculate fitness
@@ -248,6 +248,8 @@ class Ga(Objective):
                 if self.best_local > self.best_global:
                     self.best_global = self.best_local
                     self.best_summary = self.selected
+
+                    # save values to file "result/bestGenome.txt"
                     saveBestGenomes(self.best_summary, t, p, self.best_global)
 
                 # mutation
@@ -259,6 +261,8 @@ class Ga(Objective):
 
                 # calculate fitness of new genomes
                 self.calculate_fitness(t)
+
+                # check on better fitness
                 if self.fitness >= prev_fitness:
                     self.best_genome = []
                     self.best_genome = self.genomes
