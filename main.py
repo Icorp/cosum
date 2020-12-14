@@ -16,30 +16,32 @@ from cosum import CosumTfidfVectorizer
 
 
 # Constants
-reference = "On Monday President Bush nominated Clarence Thomas, a conservative\
-black Republican, to replace black liberal Justice Thurgood Marshall\
-on the Supreme Court.  Conservatives quickly embraced the nomination\
-while liberals responded either with caution or hostility. Aside from\
-his strong opposition to affirmative action, Thomas's views on other\
-major issues before the court are unknown. Although Thomas attended\
-Roman Catholic schools and studied for the priesthood and the Catholic\
-Church vigorously opposes abortion, Thomas has apparently never taken\
-a public stand on abortion or the constitutional right to privacy. If\
-Thomas remains silent on these issues his nomination is likely to be\
-confirmed."
+reference = "Senators McClure (R) and Metzenbaum (D) have sponsored bills to\
+prevent plastic guns from slipping through airport security.  The gun,\
+not yet manufactured, is intended for military and police use.\
+Metzenbaum's bill would require some detectable metal content;\
+McClure's would require more sensitive detection equipment at\
+airports, almost certainly causing passenger delays.\
+The NRA opposes \"the first federal gun ban bill in America\", and warns\
+members their guns will soon be inspected and weighed by government\
+agents.\
+However, on this issue they will compromise, not to ban the gun, but\
+to increase airport security.  Handgun control advocates and law\
+enforcement officials back Metzenbaum's proposal."
 
 
 print("Start ...")
 print("Reading document ...")
-text = readText("dataset/data/training/d01a/docs/SJMN91-06184003")
+text = readText("training/AP880310-0257")
 sentences = sent_tokenize(text)
 
 # l_avg
 l_avg = len(word_tokenize(text))/len(sentences)
 
-# sentences = sent_tokenize(text)
+# calculate how many clusters we need
 K = int(findK(text))
 
+# convert text to vector
 vectorizer = CosumTfidfVectorizer()
 vectorizer.fit(text)
 vector = vectorizer.weight_matrix
