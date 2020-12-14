@@ -12,9 +12,11 @@ def readFile():
         # сохраняем данные как двоичный поток
         placesList = pickle.load(filehandle)
     return placesList
+
 def saveJson(nameFile,data):
     with open('results/data.json', 'w') as outfile:
         json.dump(data, outfile)
+
 def saveStats(fx,indexs,scores):
     fx = str(fx)
     indexs = concatenate_list_data(indexs)
@@ -46,11 +48,12 @@ def saveBestGenomes(genomes,t,p,best_global):
     t = str(t)
     p = str(p)
     best_global = str(best_global)
-    result = "P ="+p+"\t t="+t+"\t genomes="+indexs+"\t best_global="+best_global+"\n"
+    result = "P ="+p+"\t t="+t+"\t genomes= "+indexs+"\t best_global="+best_global+"\n"
     f = open('results/best.txt', 'a') 
     f.write(result)
     f.close()
 
+# read text from DUC documents
 def readText(name):
     f = open(name,"r",encoding="utf-8",)
     f =f.read()
