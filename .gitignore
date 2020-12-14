@@ -2,5 +2,5 @@
 __pycache__
 test.py
 test2.py
-/dataset
-/results
+dataset/
+results/
