@@ -1,4 +1,4 @@
-# cosum
+# Сosum
 COSUM: Text summarization based on clustering and
 optimization
 
